@@ -1,0 +1,43 @@
+@media screen and (max-width: 600px) {
+  .tabmenu {
+margin-top: 10pc;
+  }
+}
+
+header {
+  height: 350px;
+  display: grid;
+  padding: 16px;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.header-info {
+  width: 650px;
+}
+
+.tabmenu {
+  /* float: left; */
+  /* display: block; */
+  /* color: white; */
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.card {
+  box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+  padding-top: 30px;
+  padding-bottom: 20px;
+  border-radius: 8px;
+  background-color: white;
+  overflow: auto;
+}
+
+.rowbox-items {
+  padding: 2rem;
+  background: #EEEEEE;
+  color:#fff;
+  text-align: center;
+
+}
