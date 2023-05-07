@@ -2,7 +2,9 @@ import * as React from 'react';
 import {useLocation, Route, Routes } from 'react-router-dom';
 import Navbar from '../Components/navbar'
 import Login from '../Authen/Authentication';
-import Home from '../Views/home';
+import Home from '../Views/main/home';
+import MainWarehouse from '../Views/main/main-warehouse';
+import MainStore from '../Views/main/main-store'
 import Overview from '../Views/overview';
 import AddStock from '../Views/addstock';
 import CheckStock from '../Views/checkstock';
@@ -13,15 +15,13 @@ import ErrorPage from "../error-page404";
 function Root() {
   const location = useLocation();
 
-  // if (!token) {
-  //   return <Login />;
-  // }
-
   return (
     <div>
       {location.pathname !== "/login" && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/mainwarehouse" element={<MainWarehouse/>} />
+        <Route path="/mainstore" element={<MainStore/>} />
         <Route path="/overview" element={<Overview />} />
         <Route path="/addstock" element={<AddStock />} />
         <Route path="/checkstock" element={<CheckStock />} />

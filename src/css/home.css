@@ -1,43 +1,58 @@
-@media screen and (max-width: 600px) {
-  .tabmenu {
-margin-top: 10pc;
-  }
-}
-
-header {
-  height: 350px;
-  display: grid;
-  padding: 16px;
-  /* justify-content: center; */
-  align-items: center;
-}
-
-.header-info {
-  width: 650px;
-}
 
 .tabmenu {
   /* float: left; */
   /* display: block; */
   /* color: white; */
   text-align: center;
-  padding: 14px 16px;
+  /* padding: 14px 16px; */
   text-decoration: none;
 }
 
 .card {
-  box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
+  /* box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px; */
   padding-top: 30px;
   padding-bottom: 20px;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   background-color: white;
   overflow: auto;
 }
 
+figure {
+	/* width: auto;
+	height: auto; */
+	margin: 0;
+	padding: 0;
+	/* background: #fff; */
+	/* overflow: hidden; */
+  /* border-radius: 100%; */
+}
+figure:hover+span {
+	bottom: -36px;
+	opacity: 1;
+  
+}
+
+/* Zoom In #1 */
+.hover01 figure img {
+	-webkit-transform: scale(1);
+	transform: scale(1);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+  
+}
+.hover01 figure:hover img {
+	-webkit-transform: scale(1.2);
+	transform: scale(1.2);
+}
+
 .rowbox-items {
-  padding: 2rem;
+  padding: 0rem;
   background: #EEEEEE;
   color:#fff;
   text-align: center;
+}
 
+.border-items:hover {
+  background-color: #B7B7B7;
+  border-radius: 4%;
 }
