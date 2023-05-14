@@ -46,7 +46,7 @@ function MainStore() {
                   <a style={{ textDecoration: "none" }}>
                     <div className="hover01">
                       <figure>
-                        <div style={{ paddingLeft: "30px" }}>
+                        <div>
                           <img src={ProductStock} className="img-store" />
                         </div>
                       </figure>

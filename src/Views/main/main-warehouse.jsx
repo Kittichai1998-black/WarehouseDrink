@@ -21,7 +21,7 @@ function MainWarehouse() {
           <div className="contaier text-center">
             <div className="row">
               <div className="col-sm-12">
-                <div style={{ paddingInline: "36%", marginTop: "4%" }}>
+                <div style={{ paddingInline: "36%" }}>
                   <h1 className="card-title" style={{ color: "#fff" ,fontSize: "50px",paddingBottom:"14px" }}>
                     Warehouse Center
                   </h1>

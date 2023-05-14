@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useLocation, Route, Routes } from 'react-router-dom';
+import {useLocation, Route, Routes,Navigate } from 'react-router-dom';
 import Navbar from '../Components/navbar'
 import Login from '../Authen/Authentication';
 import Home from '../Views/main/home';
@@ -14,7 +14,12 @@ import ErrorPage from "../error-page404";
 
 function Root() {
   const location = useLocation();
-
+  const isLoggedIn = localStorage.getItem("isLoggedIn")
+ 
+  if(!isLoggedIn){
+    return <Login />
+  }
+  
   return (
     <div>
       {location.pathname !== "/login" && <Navbar />}
@@ -26,6 +31,7 @@ function Root() {
         <Route path="/addstock" element={<AddStock />} />
         <Route path="/checkstock" element={<CheckStock />} />
         <Route path="/setting" element={<Setting />} />
+
         <Route path="/login" element={<Login />} />
 
         <Route path="*" element={<ErrorPage />} />
