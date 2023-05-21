@@ -17,7 +17,11 @@ function Authentication() {
   // const dispatch = useDispatch();
   async function login() {
     console.log(username, password);
-    return await axios
+    // if(username == "admin"){
+    //   navigate("/")
+    // }
+    // return 
+    await axios
       .post("http://localhost:3001/api/login", {
         username: username,
         password: password,

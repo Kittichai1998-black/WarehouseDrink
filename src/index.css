@@ -1,10 +1,21 @@
-.body-page {
-  font-family: var(--font-family);
-  /* display:grid; */
-  padding-top: 20px;
-  /* max-height: 100%; */
-  /* padding-inline: 15%; */
+body{
   background-color: #eeeeee;
+}
+
+.layout-page {
+  font-family: var(--font-family);
+  margin-inline: 4rem;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  /* zoom: 90%; */
+}
+
+.background-page {
+  background-color: #eeeeee;
+}
+
+.container {
+ margin-inline: 1rem;
 }
 
 .layout-content .card {
@@ -108,6 +119,14 @@ nav {
   height: 450px;
 }
 
+.tableContainer{
+  background-color: #1E1F25;
+  border-radius: 20px;
+  height: 244px;
+  padding: 0 10px 10px 10px;
+  overflow: scroll;
+}
+
 .img-menu {
   width: auto;
   height: 160px
@@ -136,9 +155,8 @@ nav {
 footer {
   grid-area: footer;
   background: #333;
-  /* padding: 1rem; */
   text-align: center;
-  color: #fff;
+  /* color: #fff; */
   position: fixed;
   bottom: 0;
   width: 100%;

@@ -6,7 +6,6 @@ import { Button } from "primereact/button";
 
 import { Card } from "primereact/card";
 
-import { ProductService } from "../Service/ProductService";
 import "../css/table.css";
 
 import TopBarSetting from "../assets/imgs/topbar/topbar-setting.png";
@@ -19,7 +18,6 @@ export default function Setting() {
   const [metaKey, setMetaKey] = useState(true);
 
   useEffect(() => {
-    ProductService.getCustomersMedium().then((data) => setCustomers(data));
   }, []);
 
   return (

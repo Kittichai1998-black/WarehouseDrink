@@ -5,8 +5,6 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 
 import { Card } from "primereact/card";
-
-import { ProductService } from "../Service/ProductService";
 import "../css/table.css";
 
 import TopBarCheckStock from "../assets/imgs/topbar/topbar-checkstock.png";
@@ -19,7 +17,6 @@ export default function CheckStock() {
   const [metaKey, setMetaKey] = useState(true);
 
   useEffect(() => {
-    ProductService.getCustomersMedium().then((data) => setCustomers(data));
   }, []);
 
   return (
