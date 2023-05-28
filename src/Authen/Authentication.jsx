@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import "../css/Authen.css";
 import { useSelector, useDispatch } from "react-redux";
-// import { useDispatch } from 'react-redux';
-// import { setUserName } from "../store/actions"
-import axios from "axios";
+import {httpClient} from '../axios/HttpClient.jsx'
 import Swal from "sweetalert2";
 
 function Authentication() {
@@ -21,8 +19,8 @@ function Authentication() {
     //   navigate("/")
     // }
     // return 
-    await axios
-      .post("http://localhost:3001/api/login", {
+    await httpClient
+      .post("/api/login", {
         username: username,
         password: password,
       })
@@ -38,12 +36,9 @@ function Authentication() {
           });
         }
         else {
-          // dispatch(setUserName(response.data));
-          // setProfileUser(response.data);
           localStorage.setItem("userName",response.data.result.Fullname)
           localStorage.setItem("isLoggedIn",true)
           navigate("/")
-          // window.location.href = "/";
         }
       })
       .catch(function (error) {
@@ -88,16 +83,10 @@ function Authentication() {
             />
           </div>
           <div className="d-grid gap-2 mt-3">
-            {/* <a>
-              <button type="button" className="Button-style">Login</button>
-            </a> */}
             <button type="submit" className="Button-style">
               Login
             </button>
           </div>
-          {/* <p className="text-center mt-2">
-                  Forgot <a href="#">password?</a>
-                </p> */}
         </div>
       </form>
     </div>

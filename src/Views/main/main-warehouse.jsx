@@ -26,7 +26,7 @@ function MainWarehouse() {
                   style={{
                     color: "#fff",
                     fontSize: "50px",
-                    paddingBottom: "14px",
+                    paddingTop: "1rem",
                   }}
                 >
                   Warehouse Center

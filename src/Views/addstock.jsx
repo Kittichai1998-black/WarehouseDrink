@@ -5,8 +5,13 @@ import { DataTable } from "primereact/datatable";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
+import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { InputNumber } from "primereact/inputnumber";
 import { Card } from "primereact/card";
+
+import { httpClient } from "../axios/HttpClient.jsx";
+import dayjs from "dayjs";
 
 import "../css/table.css";
 
@@ -14,41 +19,82 @@ import "../css/table.css";
 
 export default function AddStock() {
   const navigate = useNavigate();
-  const [productWarehouse, setProductWarehouse] = useState([]);
+  const mainPage = localStorage.getItem("mainPage")
+  const [product, setProduct] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedTopping, setSelectedTopping] = useState(null);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [countItem, setCountItem] = useState(0);
+  const [Item, setItem] = useState("");
+  const [visible, setVisible] = useState(false);
   const [metaKey, setMetaKey] = useState(true);
   const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    "country.name": {
-      operator: FilterOperator.AND,
-      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-    },
-    representative: { value: null, matchMode: FilterMatchMode.IN },
-    status: {
-      operator: FilterOperator.OR,
-      constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-    },
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS }
   });
 
-  const getProductWarehouse = async () => {
-    const response = await axios.get("http://localhost:3001/api/getstock");
-    setProductWarehouse(response.data.result);
+  const getProduct = async () => {
+    const response = await httpClient.get("/api/"+ mainPage);
+    setProduct(response.data.result);
     console.log(response);
   };
 
+  const tableData = Object.keys(product).map((key) => ({
+    ID: key,
+    Branch: product[key].Branch,
+    Day: product[key].Day,
+    LastUpdate: product[key].LastUpdate,
+    MaximumUnits: product[key].MaximumUnits,
+    MinimumUnits: product[key].MinimumUnits,
+    ProductDescription: product[key].ProductDescription,
+    ProductID: product[key].ProductID,
+    ProductName: product[key].ProductName,
+    Type: product[key].Type,
+    UnitsInStock: product[key].UnitsInStock,
+    UnitsOnOrder: product[key].UnitsOnOrder,
+    UnitsPrice: product[key].UnitsPrice,
+    UpdateBy: product[key].UpdateBy
+  }));
+
+  const updateProduct = async () => {
+    // console.log(Item)
+    Swal.fire({
+      title: "Are you sure?",
+      customClass: { container: "my-sweetalert-container-class" },
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .put("/api/"+mainPage+"/addstock", {
+            ID: Item.ID,
+            UnitsInStock: countItem,
+            UpdateBy: updateBy
+          })
+          .then((res) => {
+            if (res.data.message !== "success") {
+              Swal.fire(res.data.message, "Error");
+              setVisible(false);
+              getProduct();
+            } else {
+              Swal.fire("Update Success", "success");
+              setVisible(false);
+              getProduct();
+            }
+          });
+      }
+    });
+  };
+
   useEffect(() => {
-    getProductWarehouse();
+    getProduct();
   }, []);
 
   const rowClass = (data) => {
     return {
-      "bg-red-200": data.UnitInStock < 10,
+      "bg-red-400": data.UnitsInStock < 10,
     };
   };
 
@@ -74,15 +120,44 @@ export default function AddStock() {
             placeholder="Search"
           />
         </span>
-        <Button label="Add Stock" size="small" severity="success" rounded/>
       </div>
     );
   };
 
+  function labelItemName (data) {
+    setVisible(true)
+    setItem(data)
+  }
+
+  const formatDate = (date) => {
+    return (
+      dayjs(date.LastUpdate).format('DD-MM-YYYY')
+    )
+  } 
+
+  const actionAdd = (data) => {
+    return (
+      <Button
+        icon="pi pi-pencil"
+        severity="warning"
+        aria-label="Add"
+        size="small"
+        onClick={() => labelItemName(data)}
+      />
+    );
+  };
+
+  const footerContent = (
+    <div>
+        <Button label="Cancel" icon="pi pi-times" severity="danger" size="small" onClick={() => setVisible(false)}/>
+        <Button label="Save" icon="pi pi-check" severity="info" size="small" onClick={() => updateProduct()}/>
+    </div>
+);
+
   const header = renderHeader();
 
   return (
-    <body>
+    // <body>
       <div className="layout-page">
         <div>
           <div className="align-items-left">
@@ -96,10 +171,6 @@ export default function AddStock() {
           </div>
           <div style={{ paddingTop: "16px" }}>
             <Card title="AddStock">
-              {/* <img
-                src={TopBarOverview}
-                style={{ width: "100%", height: "auto" }}
-              /> */}
               <div className="row justify-content-center gap-4">
                 <div className="col-sm-10">
                   <Card title="Product">
@@ -107,7 +178,7 @@ export default function AddStock() {
                       header={header}
                       filters={filters}
                       onFilter={(e) => setFilters(e.filters)}
-                      value={productWarehouse}
+                      value={tableData}
                       showGridlines
                       stripedRows
                       sortField="UnitInStock"
@@ -149,23 +220,21 @@ export default function AddStock() {
                         style={{ width: "30%" }}
                       ></Column>
                       <Column
-                        field="UnitInStock"
+                        field="UnitsInStock"
                         header="Remain"
                         sortable
                         style={{ width: "25%" }}
                       ></Column>
                       <Column
-                        field="Discription"
-                        header="Discription"
-                        // sortable
-                        style={{ width: "35%" }}
-                      ></Column>
-                      <Column
                         field="LastUpdate"
                         header="LastUpdate"
                         sortable
-                        sortField="company"
+                        body={(data, options) => formatDate(data)}
                         style={{ width: "25%" }}
+                      ></Column>
+                      <Column
+                        headerStyle={{ width: "4rem" }}
+                        body={(data) => actionAdd(data)}
                       ></Column>
                     </DataTable>
                   </Card>
@@ -173,8 +242,31 @@ export default function AddStock() {
               </div>
             </Card>
           </div>
+          <Dialog
+            header="Add Stock"
+            visible={visible}
+            onHide={() => setVisible(false)}
+            style={{ width: "35vw" }}
+            breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+            footer={footerContent}
+          >
+            <div className="p-inputgroup">
+              <span className="p-inputgroup-addon" style={{width:"20rem"}}>Remain</span>
+              {/* <label htmlFor="minmax-buttons" className="font-bold block mb-2">Min-Max Boundaries</label> */}
+              <InputNumber
+                inputId="minmax-buttons"
+                value={countItem}
+                onValueChange={(e) => setCountItem(e.value)}
+                mode="decimal"
+                
+                showButtons
+                min={0}
+                max={100}
+              />
+            </div>
+          </Dialog>
         </div>
       </div>
-    </body>
+    // </body>
   );
 }

@@ -8,39 +8,56 @@ import { Button } from "primereact/button";
 import { InputText } from 'primereact/inputtext';
 import { Card } from "primereact/card";
 
+import dayjs from "dayjs";
+
+import {httpClient} from '../axios/HttpClient.jsx'
+
 import "../css/table.css";
 
 import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
 
 export default function OverView() {
   const navigate = useNavigate();
-  const [productWarehouse, setProductWarehouse] = useState([]);
+  const mainPage = localStorage.getItem("mainPage")
+  const [product, setProduct] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedTopping, setSelectedTopping] = useState(null);
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const [metaKey, setMetaKey] = useState(true);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    ProductName: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    'country.name': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    Discription: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    LastUpdate: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    // status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] }
 });
 
-  const getProductWarehouse = async () => {
-    const response = await axios.get("http://localhost:3001/api/getstock")
-      setProductWarehouse(response.data.result);
-      console.log(response)
-  }
+const getProduct = async () => {
+  const response = await httpClient.get("/api/"+ mainPage);
+  setProduct(response.data.result);
+  console.log(response);
+};
+
+  const tableData = Object.keys(product).map((key) => ({
+    ID: key,
+    Branch: product[key].Branch,
+    Day: product[key].Day,
+    LastUpdate: product[key].LastUpdate,
+    MaximumUnits: product[key].MaximumUnits,
+    MinimumUnits: product[key].MinimumUnits,
+    ProductDescription: product[key].ProductDescription,
+    ProductID: product[key].ProductID,
+    ProductName: product[key].ProductName,
+    Type: product[key].Type,
+    UnitsInStock: product[key].UnitsInStock,
+    UnitsOnOrder: product[key].UnitsOnOrder,
+    UnitsPrice: product[key].UnitsPrice,
+    UpdateBy: product[key].UpdateBy
+  }));
 
   useEffect(() => {
-    getProductWarehouse();
+    getProduct();
   }, []);
 
   const rowClass = (data) => {
     return {
-        'bg-red-200': data.UnitInStock < 10
+        'bg-red-300': data.UnitsInStock < 10
     };
 };
 
@@ -63,10 +80,16 @@ export default function OverView() {
     );
 };
 
+  const formatDate = (date) => {
+    return (
+      dayjs(date.LastUpdate).format('DD-MM-YYYY')
+    )
+  } 
+
 const header = renderHeader();
 
   return (
-    <body>
+    // <body>
       <div className="layout-page">
         <div>
           <div className="align-items-left">
@@ -80,10 +103,6 @@ const header = renderHeader();
           </div>
           <div style={{paddingTop:"16px"}}>
             <Card title="OverView">
-              {/* <img
-                src={TopBarOverview}
-                style={{ width: "100%", height: "auto" }}
-              /> */}
               <div className="row justify-content-center gap-4">
                 <div className="col-sm-10">
                   <Card title="Product">
@@ -91,11 +110,9 @@ const header = renderHeader();
                       header={header}
                       filters={filters} 
                       onFilter={(e) => setFilters(e.filters)}
-                      value={productWarehouse}
+                      value={tableData}
                       showGridlines
                       stripedRows
-                      sortField="UnitInStock"
-                      scrollable
                       scrollHeight="auto"
                       size="small"
                       rowClassName={rowClass}
@@ -107,11 +124,6 @@ const header = renderHeader();
                       rowHover
                       paginator
                       rows={5}
-                      // rowsPerPageOptions={[5, 10, 25]}
-                      // tableStyle={{
-                      //   minWidth: "50rem",
-                      //   minHeight: 400,
-                      // }}
                       paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
                       currentPageReportTemplate="{first} to {last} of {totalRecords}"
                     >
@@ -124,7 +136,7 @@ const header = renderHeader();
                         field="ProductID"
                         header="ProductID"
                         sortable
-                        style={{ width: "20%" }}
+                        style={{ width: "10%" }}
                       ></Column>
                       <Column
                         field="ProductName"
@@ -133,23 +145,23 @@ const header = renderHeader();
                         style={{ width: "30%" }}
                       ></Column>
                       <Column
-                        field="UnitInStock"
+                        field="UnitsInStock"
                         header="Remain"
                         sortable
                         style={{ width: "25%" }}
                       ></Column>
                       <Column
                         field="Discription"
-                        header="Discription"
+                        header="%"
                         // sortable
-                        style={{ width: "35%" }}
+                        style={{ width: "10%" }}
                       ></Column>
                       <Column
                         field="LastUpdate"
                         header="LastUpdate"
                         sortable
-                        sortField="company"
                         style={{ width: "25%" }}
+                        body={(data, options) => formatDate(data)}
                       ></Column>
                     </DataTable>
                   </Card>
@@ -159,6 +171,6 @@ const header = renderHeader();
           </div>
         </div>
       </div>
-    </body>
+    // </body>
   );
 }

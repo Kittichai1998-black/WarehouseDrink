@@ -12,6 +12,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.4.0",
     "bootstrap": "^5.2.3",
+    "dayjs": "^1.11.7",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
     "primeflex": "^3.3.0",
@@ -25,7 +26,8 @@
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
     "sort-by": "^1.2.0",
-    "sweetalert2": "^11.7.5"
+    "sweetalert2": "^11.7.5",
+    "url-join": "^5.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

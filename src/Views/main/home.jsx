@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../Components/navbar";
+import { httpClient } from "../../axios/HttpClient.jsx"
 import "../../css/home.css";
 // import '../index.css/'
 import WarehouseStock from "../../assets/imgs/Warehouse-1.png";
@@ -13,6 +14,20 @@ import SettingIcon from "../../assets/icons/setting-disable-icon.png";
 
 function Home() {
   const [count, setCount] = useState(0);
+  const [countProduct, setCountProduct] = useState([]);
+
+  const getProduct = async () => {
+    const response = await httpClient.get("/api/stock");
+    const dataArray = Object.values(response.data.result); // แปลงข้อมูลเป็นอาร์เรย์
+    setCountProduct(response.data.result);
+  };
+
+  const dataArray = Object.values(countProduct); // แปลงข้อมูลเป็นอาร์เรย์
+  const itemsWithLowStock = dataArray.filter((item) => item.UnitsInStock < 10);
+
+  useEffect(() => {
+    getProduct();
+  }, []);
 
   return (
     <div className="background-main1">
@@ -36,7 +51,7 @@ function Home() {
                     >
                       Stock Status
                     </p>
-                    <a href="/mainwarehouse" style={{ textDecoration: "none" }}>
+                    <a href="/mainwarehouse" style={{ textDecoration: "none" }} onClick={() => localStorage.setItem("mainPage","warehouse")}>
                       <div className="hover01">
                         <figure>
                           <div style={{ paddingLeft: "30px" }}>
@@ -64,10 +79,10 @@ function Home() {
                         fontSize: "30px",
                       }}
                     >
-                      Need Order 10 Items
+                      Need Order {itemsWithLowStock.length} items
                     </p>
 
-                    <a href="/mainstore" style={{ textDecoration: "none" }}>
+                    <a href="/mainstore" style={{ textDecoration: "none" }} onClick={() => localStorage.setItem("mainPage","stock")}>
                       <div className="hover01">
                         <figure>
                           <img src={ProductStock} className="img-store" />

@@ -148,6 +148,10 @@ nav {
   align-items: center;
 }
 
+.my-sweetalert-container-class {
+  z-index: 99999 !important;
+}
+
 .p-datatable .p-datatable-thead > tr > th {
   background-color: var(--blue-300);
 }
