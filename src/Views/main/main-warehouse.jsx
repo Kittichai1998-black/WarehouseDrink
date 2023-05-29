@@ -21,32 +21,25 @@ function MainWarehouse() {
           <div className="contaier text-center">
             <div className="row">
               <div className="col-sm-12">
-                <h1
-                  className="card-title"
-                  style={{
-                    color: "#fff",
-                    fontSize: "50px",
-                    paddingTop: "1rem",
-                  }}
-                >
-                  Warehouse Center
-                </h1>
-                <div style={{ paddingInline: "36%" }}>
-                  <p
-                    style={{
-                      backgroundColor: "#379237",
-                      borderRadius: "24px",
-                      border: "2px solid #fff",
-                      color: "#fff",
-                      fontSize: "36px",
-                    }}
-                  >
-                    Stock Status
-                  </p>
-                  <a href="/checkstock" style={{ textDecoration: "none" }}>
+                <div className="header-warehouse">
+                <h1 className="card-title" style={{ color: "#fff" }}>
+                      Warehouse Center
+                    </h1>
+                    <p
+                      style={{
+                        backgroundColor: "#379237",
+                        borderRadius: "24px",
+                        border:"2px solid #fff",
+                        color: "#fff",
+                        fontSize: "30px",
+                      }}
+                    >
+                      Stock Status
+                    </p>
+                    <a href="" style={{ textDecoration: "none" }}>
                     <div className="hover01">
                       <figure>
-                        <div style={{ paddingLeft: "30px" }}>
+                        <div>
                           <img src={WarehouseStock} className="img-warehouse" />
                         </div>
                       </figure>

@@ -1,14 +1,11 @@
-.Backgroung-page {
-    /* background-color: white; */
-    background-image: url('../assets/imgs/Main.jpg');
-  }
-  
+
   .Auth-form-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100vw;
     height: 100vh;
+    background-color: #EEF1FF;
   }
   
   .Auth-form {
@@ -42,9 +39,9 @@
   .Button-style {
     background-color: #5baff3;
     border-radius: 10px;
-    color: #000;
+    color: #394a67;
     width: 100%;
-    border: 2 solid #333;
+    border: 1 solid #7286D3;
     font-weight: 600;
   }
 

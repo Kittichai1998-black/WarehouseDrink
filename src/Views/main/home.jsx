@@ -36,7 +36,7 @@ function Home() {
             <div className="contaier text-center">
               <div className="row">
                 <div className="col-sm-6">
-                  <div style={{ paddingInline: "25%", marginTop: "10%" }}>
+                  <div className="header-text">
                     <h1 className="card-title" style={{ color: "#fff" }}>
                       Warehouse Center
                     </h1>
@@ -54,7 +54,7 @@ function Home() {
                     <a href="/mainwarehouse" style={{ textDecoration: "none" }} onClick={() => localStorage.setItem("mainPage","warehouse")}>
                       <div className="hover01">
                         <figure>
-                          <div style={{ paddingLeft: "30px" }}>
+                          <div>
                             <img
                               src={WarehouseStock}
                               className="img-warehouse"
@@ -66,8 +66,8 @@ function Home() {
                   </div>
                 </div>
                 <div className="col-sm-6">
-                  <div style={{ paddingInline: "25%", marginTop: "10%" }}>
-                    <h1 className="card-title" style={{ color: "red" }}>
+                  <div className="header-text">
+                    <h1 className="card-title color-stock">
                       Store Stock
                     </h1>
                     <p

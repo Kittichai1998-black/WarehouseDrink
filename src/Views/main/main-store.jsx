@@ -19,31 +19,24 @@ function MainStore() {
       <header>
         <section>
           <div className="contaier text-center">
-            <div style={{ margin: "8%" }}>
-              <div className="row">
-                <div className="col-sm-4">
-                  <div style={{margin:"38px"}}>
-                    <h1
-                      className="card-title"
-                      style={{ color: "#FC4F00", fontSize: "50px" }}
-                    >
-                      Store Stock
+            <div className="row">
+              <div className="col-sm-12">
+                <div className="header-warehouse">
+                <h1 className="card-title" style={{ color: "#FC4F00" }}>
+                        Store Stock
                     </h1>
                     <p
                       style={{
                         backgroundColor: "#FC4F00",
                         borderRadius: "24px",
-                        border: "2px solid #fff",
+                        border:"2px solid #fff",
                         color: "#fff",
-                        fontSize: "36px",
+                        fontSize: "30px",
                       }}
                     >
                       Stock Status
                     </p>
-                  </div>
-                </div>
-                <div className="col-sm-4">
-                  <a style={{ textDecoration: "none" }}>
+                    <a href="" style={{ textDecoration: "none" }}>
                     <div className="hover01">
                       <figure>
                         <div>
@@ -53,7 +46,6 @@ function MainStore() {
                     </div>
                   </a>
                 </div>
-                <div className="col-sm-4"></div>
               </div>
             </div>
           </div>

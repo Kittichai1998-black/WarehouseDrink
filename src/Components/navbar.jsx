@@ -14,9 +14,9 @@ function Navbar() {
           {/* <img src="/docs/4.0/assets/brand/bootstrap-solid.svg" width="30" height="30" className="d-inline-block align-top" alt=""> */}
           WareHouseStockDrink
         </a>
-        <form className="form-inline">
-          <span style={{paddingRight:"14px"}}>ผู้ใช้ : {userName}</span>
-          <button className="btn btn-outline-danger my-2 my-sm-0" onClick={e => Logout()}>logout</button>
+        <form className="nav-user">
+          <span style={{paddingRight:"1rem"}}>ผู้ใช้ : {userName}</span>
+          <button className="btn btn-outline-danger my- my-sm-0"  style={{marginRight:"1rem"}} onClick={e => Logout()}>logout</button>
         </form>
       </nav>
     </div>

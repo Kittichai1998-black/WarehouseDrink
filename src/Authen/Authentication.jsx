@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "../css/Authen.css";
 import { useSelector, useDispatch } from "react-redux";
-import {httpClient} from '../axios/HttpClient.jsx'
+import { httpClient } from "../axios/HttpClient.jsx";
 import Swal from "sweetalert2";
 
 function Authentication() {
@@ -18,7 +18,7 @@ function Authentication() {
     // if(username == "admin"){
     //   navigate("/")
     // }
-    // return 
+    // return
     await httpClient
       .post("/api/login", {
         username: username,
@@ -34,11 +34,10 @@ function Authentication() {
             icon: "error",
             confirmButtonText: "OK",
           });
-        }
-        else {
-          localStorage.setItem("userName",response.data.result.Fullname)
-          localStorage.setItem("isLoggedIn",true)
-          navigate("/")
+        } else {
+          localStorage.setItem("userName", response.data.result.Fullname);
+          localStorage.setItem("isLoggedIn", true);
+          navigate("/");
         }
       })
       .catch(function (error) {
@@ -60,35 +59,37 @@ function Authentication() {
   };
 
   return (
-    <div className="Auth-form-container">
-      <form className="Auth-form" onSubmit={handleSubmit}>
-        <div className="Auth-form-content">
-          <h3 className="Auth-form-title">WareHouseStockDrink</h3>
-          <div className="form-group mt-1">
-            <label style={{ textAlign: "left" }}>Username</label>
-            <input
-              type="username"
-              className="form-control mt-1"
-              placeholder="Username"
-              onChange={(e) => setUsername(e.target.value)}
-            />
+    <div className="background-login">
+      <div className="Auth-form-container">
+        <form className="Auth-form" onSubmit={handleSubmit}>
+          <div className="Auth-form-content">
+            <h3 className="Auth-form-title">WareHouseStockDrink</h3>
+            <div className="form-group mt-1">
+              <label style={{ textAlign: "left" }}>Username</label>
+              <input
+                type="username"
+                className="form-control mt-1"
+                placeholder="Username"
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="form-group mt-3">
+              <label>Password</label>
+              <input
+                type="password"
+                className="form-control mt-1"
+                placeholder="Password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className="d-grid gap-2 mt-3">
+              <button type="submit" className="Button-style">
+                Login
+              </button>
+            </div>
           </div>
-          <div className="form-group mt-3">
-            <label>Password</label>
-            <input
-              type="password"
-              className="form-control mt-1"
-              placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div className="d-grid gap-2 mt-3">
-            <button type="submit" className="Button-style">
-              Login
-            </button>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
