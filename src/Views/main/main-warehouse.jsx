@@ -53,7 +53,7 @@ function MainWarehouse() {
       </header>
 
       <footer>
-        <div className="tabmenu">
+        <div className="tabmenu-main">
           <div className="row">
             <div className="col-sm-3 rowbox-items">
               <div className="border-items">

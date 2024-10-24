@@ -27,7 +27,8 @@
     "redux-thunk": "^2.4.2",
     "sort-by": "^1.2.0",
     "sweetalert2": "^11.7.5",
-    "url-join": "^5.0.0"
+    "url-join": "^5.0.0",
+    "vite-project": "file:"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

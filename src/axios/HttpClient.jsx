@@ -7,7 +7,7 @@ axios.interceptors.request.use(async (config)=> {
 //   if (jwtToken != null) {
 //       config.headers = { 'x-access-token': jwtToken }
 //   }
-  config.url = join('https://us-central1-node-backend-wh.cloudfunctions.net/app', config.url);
+  config.url = join('https://us-central1-node-backend-wh-84bfa.cloudfunctions.net/app', config.url);
   return config;
   
 });

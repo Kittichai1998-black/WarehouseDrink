@@ -27,7 +27,7 @@
   }
 
   .nav-user{
-    padding-left: 42%;
+    padding-left: 10%;
   }
 
   .header-text{
@@ -161,6 +161,14 @@
   
   .p-datatable .p-datatable-thead > tr > th {
     background-color: var(--blue-300);
+  }
+
+  .tabmenu {
+    margin-bottom: 16%;
+  }
+
+  .tabmenu-main {
+    margin-bottom: 25%;
   }
   
   footer {
