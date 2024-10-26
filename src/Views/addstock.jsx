@@ -159,8 +159,8 @@ export default function AddStock() {
   return (
     // <body>
       <div className="layout-page">
-        <div>
-          <div className="align-items-left">
+        <div className="card">
+          {/* <div className="align-items-left">
             <Button
               label="Back"
               icon="pi pi-angle-left"
@@ -168,12 +168,13 @@ export default function AddStock() {
               size="small"
               onClick={() => navigate("/mainwarehouse")}
             />
-          </div>
-          <div style={{ paddingTop: "16px" }}>
-            <Card title="AddStock">
+          </div> */}
+          {/* <div style={{ paddingTop: "16px" }}> */}
+            <Card>
+              <p class="w-2 text-left font-bold text-black-alpha-60 mr-3 text-3xl w-10">AddStock</p>
               <div className="row justify-content-center gap-4">
-                <div className="col-sm-10">
-                  <Card title="Product">
+                <div className="col-sm-12">
+                  {/* <Card title="Product"> */}
                     <DataTable
                       header={header}
                       filters={filters}
@@ -237,11 +238,11 @@ export default function AddStock() {
                         body={(data) => actionAdd(data)}
                       ></Column>
                     </DataTable>
-                  </Card>
+                  {/* </Card> */}
                 </div>
               </div>
             </Card>
-          </div>
+          {/* </div> */}
           <Dialog
             header="Add Stock"
             visible={visible}

@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import { store } from "./store/store"
 import Root from "./routes/root";
 import "./index.css";
+import "./flags.css";
 import { createRoot } from "react-dom/client";
 
 const rootElement = document.getElementById("root");

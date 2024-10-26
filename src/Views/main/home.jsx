@@ -1,16 +1,9 @@
 import { useState, useEffect} from "react";
-import { Link } from "react-router-dom";
-import Navbar from "../../Components/navbar";
 import { httpClient } from "../../axios/HttpClient.jsx"
 import "../../css/home.css";
 // import '../index.css/'
 import WarehouseStock from "../../assets/imgs/Warehouse-1.png";
 import ProductStock from "../../assets/imgs/ProductStock.png";
-
-import OverViewIcon from "../../assets/icons/overview-disable-icon.png";
-import AddStockIcon from "../../assets/icons/addstock-disable-icon.png";
-import CheckStockIcon from "../../assets/icons/checkstock-disable-icon.png";
-import SettingIcon from "../../assets/icons/setting-disable-icon.png";
 
 function Home() {
   const [count, setCount] = useState(0);
@@ -96,7 +89,7 @@ function Home() {
           </section>
       </header>
 
-      <footer>
+      {/* <footer>
         <div className="tabmenu-main">
           <div className="row">
             <div className="col-sm-3 rowbox-items">
@@ -105,9 +98,9 @@ function Home() {
                   src={OverViewIcon}
                   className="img-menu"
                 />
-              </div>
+              </div> */}
               {/* <h4 style={{ color: '#65647C', textDecoration: 'none' }}>Overview</h4> */}
-            </div>
+            {/* </div>
             <div className="col-sm-3 rowbox-items">
               <div className="border-items">
                 <img
@@ -134,7 +127,7 @@ function Home() {
             </div>
           </div>
         </div>
-      </footer>
+      </footer> */}
     </div>
   );
 }
