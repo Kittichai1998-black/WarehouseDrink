@@ -1,5 +1,6 @@
 import { useState, useEffect} from "react";
 import { httpClient } from "../../axios/HttpClient.jsx"
+import {useNavigate} from "react-router-dom";
 import "../../css/home.css";
 // import '../index.css/'
 import WarehouseStock from "../../assets/imgs/Warehouse-1.png";
@@ -16,6 +17,7 @@ import SettingIcon from "../../assets/icons/setting-icon.png";
 function Home() {
   const [count, setCount] = useState(0);
   const [countProduct, setCountProduct] = useState([]);
+  const navigate = useNavigate();
 
   const getProduct = async () => {
     const response = await httpClient.get("/api/stock");
@@ -23,8 +25,22 @@ function Home() {
     setCountProduct(response.data.result);
   };
 
-  const dataArray = Object.values(countProduct); // แปลงข้อมูลเป็นอาร์เรย์
-  const itemsWithLowStock = dataArray.filter((item) => item.UnitsInStock < 10);
+  function NevigateToStock() {
+    navigate('/mainstore');
+    localStorage.setItem("mainPage","stock");
+  }
+
+  function NevigateToWarehouse() {
+    navigate('/mainwarehouse');
+    localStorage.setItem("mainPage","warehouse");
+  }
+
+  function NevigateToSetting() {
+    navigate('/setting');
+  }
+
+  const dataArray = Object.values(countProduct);
+  // const itemsWithLowStock = dataArray.filter((item) => item.UnitsInStock < 10);
 
   useEffect(() => {
     getProduct();
@@ -52,7 +68,7 @@ function Home() {
                     >
                       Stock Status
                     </p>
-                    <a href="/mainwarehouse" style={{ textDecoration: "none" }} onClick={() => localStorage.setItem("mainPage","warehouse")}>
+                    <a style={{ textDecoration: "none" }} onClick={NevigateToWarehouse}>
                       <div className="hover01">
                         <figure>
                           <div>
@@ -80,10 +96,10 @@ function Home() {
                         fontSize: "30px",
                       }}
                     >
-                      Need Order {itemsWithLowStock.length} items
+                      Need Order 0 items
                     </p>
 
-                    <a href="/mainstore" style={{ textDecoration: "none" }} onClick={() => localStorage.setItem("mainPage","stock")}>
+                    <a style={{ textDecoration: "none" }} onClick={NevigateToStock}>
                       <div className="hover01">
                         <figure>
                           <img src={ProductStock} className="img-store" />
@@ -141,9 +157,10 @@ function Home() {
             <div className="col-sm-3 rowbox-items">
               <div className="border-items">
                 <a
-                  href="/mainwarehouse"
+                
                   className="highlight"
                   style={{ textDecoration: "none" }}
+                  onClick={NevigateToWarehouse}
                 >
                   <img src={OverViewIcon} className="img-menu" />
                 </a>
@@ -152,7 +169,7 @@ function Home() {
             </div>
             <div className="col-sm-3 rowbox-items">
               <div className="border-items">
-                <a href="/mainstore" style={{ textDecoration: "none" }}>
+                <a style={{ textDecoration: "none" }} onClick={NevigateToStock}>
                   <img src={AddStockIcon} className="img-menu" />
                   {/* <h4 style={{ color: '#65647C' }}>Add Stock</h4> */}
                 </a>
@@ -160,7 +177,7 @@ function Home() {
             </div>
             <div className="col-sm-3 rowbox-items">
               <div className="border-items">
-                <a href="/mainstore" style={{ textDecoration: "none" }}>
+                <a style={{ textDecoration: "none" }} onClick={NevigateToStock}>
                   <img src={CheckStockIcon} className="img-menu" />
                   {/* <h4 style={{ color: '#65647C' }}>Check Stock</h4> */}
                 </a>
@@ -168,7 +185,7 @@ function Home() {
             </div>
             <div className="col-sm-3 rowbox-items">
               <div className="border-items">
-                <a href="/setting" style={{ textDecoration: "none" }}>
+                <a style={{ textDecoration: "none" }} onClick={NevigateToSetting}>
                   <img src={SettingIcon} className="img-menu" />
                   {/* <h4 style={{ color: '#65647C' }}>Setting</h4> */}
                 </a>
