@@ -15,11 +15,9 @@ import dayjs from "dayjs";
 
 import "../css/table.css";
 
-// import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
-
 export default function AddStock() {
   const navigate = useNavigate();
-  const mainPage = localStorage.getItem("mainPage")
+  const mainPage = localStorage.getItem("mainPage");
   const [product, setProduct] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedTopping, setSelectedTopping] = useState(null);
@@ -29,11 +27,11 @@ export default function AddStock() {
   const [visible, setVisible] = useState(false);
   const [metaKey, setMetaKey] = useState(true);
   const [filters, setFilters] = useState({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
   const getProduct = async () => {
-    const response = await httpClient.get("/api/"+ mainPage);
+    const response = await httpClient.get("/api/" + products);
     setProduct(response.data.result);
     console.log(response);
   };
@@ -52,7 +50,7 @@ export default function AddStock() {
     UnitsInStock: product[key].UnitsInStock,
     UnitsOnOrder: product[key].UnitsOnOrder,
     UnitsPrice: product[key].UnitsPrice,
-    UpdateBy: product[key].UpdateBy
+    UpdateBy: product[key].UpdateBy,
   }));
 
   const updateProduct = async () => {
@@ -68,10 +66,10 @@ export default function AddStock() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .put("/api/"+mainPage+"/addstock", {
+          .put("/api/" + mainPage + "/addstock", {
             ID: Item.ID,
             UnitsInStock: countItem,
-            UpdateBy: updateBy
+            UpdateBy: updateBy,
           })
           .then((res) => {
             if (res.data.message !== "success") {
@@ -87,10 +85,6 @@ export default function AddStock() {
       }
     });
   };
-
-  useEffect(() => {
-    getProduct();
-  }, []);
 
   const rowClass = (data) => {
     return {
@@ -124,16 +118,14 @@ export default function AddStock() {
     );
   };
 
-  function labelItemName (data) {
-    setVisible(true)
-    setItem(data)
+  function labelItemName(data) {
+    setVisible(true);
+    setItem(data);
   }
 
   const formatDate = (date) => {
-    return (
-      dayjs(date.LastUpdate).format('DD-MM-YYYY')
-    )
-  } 
+    return dayjs(date.LastUpdate).format("DD-MM-YYYY");
+  };
 
   const actionAdd = (data) => {
     return (
@@ -147,20 +139,35 @@ export default function AddStock() {
     );
   };
 
-  const footerContent = (
-    <div>
-        <Button label="Cancel" icon="pi pi-times" severity="danger" size="small" onClick={() => setVisible(false)}/>
-        <Button label="Save" icon="pi pi-check" severity="info" size="small" onClick={() => updateProduct()}/>
-    </div>
-);
+  // const footerContent = (
+  //   <div>
+  //     <Button
+  //       label="Cancel"
+  //       icon="pi pi-times"
+  //       severity="danger"
+  //       size="small"
+  //       onClick={() => setVisible(false)}
+  //     />
+  //     <Button
+  //       label="Save"
+  //       icon="pi pi-check"
+  //       severity="info"
+  //       size="small"
+  //       onClick={() => updateProduct()}
+  //     />
+  //   </div>
+  // );
 
   const header = renderHeader();
 
+  useEffect(() => {
+    getProduct();
+  }, []);
+
   return (
-    // <body>
-      <div className="layout-page">
-        <div className="card">
-          {/* <div className="align-items-left">
+    <div className="layout-page">
+      {/* <div className="card"> */}
+      {/* <div className="align-items-left">
             <Button
               label="Back"
               icon="pi pi-angle-left"
@@ -169,105 +176,100 @@ export default function AddStock() {
               onClick={() => navigate("/mainwarehouse")}
             />
           </div> */}
-          {/* <div style={{ paddingTop: "16px" }}> */}
-            <Card>
-              <p class="w-2 text-left font-bold text-black-alpha-60 mr-3 text-3xl w-10">AddStock</p>
-              <div className="row justify-content-center gap-4">
-                <div className="col-sm-12">
-                  {/* <Card title="Product"> */}
-                    <DataTable
-                      header={header}
-                      filters={filters}
-                      onFilter={(e) => setFilters(e.filters)}
-                      value={tableData}
-                      showGridlines
-                      stripedRows
-                      sortField="UnitInStock"
-                      scrollable
-                      scrollHeight="auto"
-                      size="small"
-                      rowClassName={rowClass}
-                      selection={selectedProduct}
-                      onSelectionChange={(e) => setSelectedProduct(e.value)}
-                      selectionMode="single"
-                      dataKey="ProductID"
-                      metaKeySelection={metaKey}
-                      rowHover
-                      paginator
-                      rows={5}
-                      // rowsPerPageOptions={[5, 10, 25]}
-                      // tableStyle={{
-                      //   minWidth: "50rem",
-                      //   minHeight: 400,
-                      // }}
-                      paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-                      currentPageReportTemplate="{first} to {last} of {totalRecords}"
-                    >
-                      <Column
-                        header="No."
-                        headerStyle={{ width: "3%" }}
-                        body={(data, options) => options.rowIndex + 1}
-                      ></Column>
-                      <Column
-                        field="ProductID"
-                        header="ProductID"
-                        sortable
-                        style={{ width: "20%" }}
-                      ></Column>
-                      <Column
-                        field="ProductName"
-                        header="Ingredient"
-                        sortable
-                        style={{ width: "30%" }}
-                      ></Column>
-                      <Column
-                        field="UnitsInStock"
-                        header="Remain"
-                        sortable
-                        style={{ width: "25%" }}
-                      ></Column>
-                      <Column
-                        field="LastUpdate"
-                        header="LastUpdate"
-                        sortable
-                        body={(data, options) => formatDate(data)}
-                        style={{ width: "25%" }}
-                      ></Column>
-                      <Column
-                        headerStyle={{ width: "4rem" }}
-                        body={(data) => actionAdd(data)}
-                      ></Column>
-                    </DataTable>
-                  {/* </Card> */}
-                </div>
-              </div>
-            </Card>
-          {/* </div> */}
-          <Dialog
-            header="Add Stock"
-            visible={visible}
-            onHide={() => setVisible(false)}
-            style={{ width: "35vw" }}
-            breakpoints={{ "960px": "75vw", "641px": "100vw" }}
-            footer={footerContent}
+      {/* <div style={{ paddingTop: "16px" }}> */}
+      {/* <Card> */}
+      {/* <p className="w-2 text-left font-bold text-black-alpha-60 mr-3 text-3xl w-10">AddStock</p> */}
+      <div className="row justify-content-center gap-4">
+        <div className="col-sm-12">
+          <DataTable
+            header={header}
+            filters={filters}
+            onFilter={(e) => setFilters(e.filters)}
+            value={tableData}
+            showGridlines
+            stripedRows
+            sortField="UnitInStock"
+            scrollable
+            scrollHeight="auto"
+            size="small"
+            rowClassName={rowClass}
+            selection={selectedProduct}
+            onSelectionChange={(e) => setSelectedProduct(e.value)}
+            selectionMode="single"
+            dataKey="ProductID"
+            metaKeySelection={metaKey}
+            rowHover
+            paginator
+            rows={5}
+            // rowsPerPageOptions={[5, 10, 25]}
+            // tableStyle={{
+            //   minWidth: "50rem",
+            //   minHeight: 400,
+            // }}
+            paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+            currentPageReportTemplate="{first} to {last} of {totalRecords}"
           >
-            <div className="p-inputgroup">
-              <span className="p-inputgroup-addon" style={{width:"20rem"}}>Remain</span>
-              {/* <label htmlFor="minmax-buttons" className="font-bold block mb-2">Min-Max Boundaries</label> */}
-              <InputNumber
-                inputId="minmax-buttons"
-                value={countItem}
-                onValueChange={(e) => setCountItem(e.value)}
-                mode="decimal"
-                
-                showButtons
-                min={0}
-                max={100}
-              />
-            </div>
-          </Dialog>
+            <Column
+              header="No."
+              headerStyle={{ width: "3%" }}
+              body={(data, options) => options.rowIndex + 1}
+            ></Column>
+            <Column
+              field="ProductID"
+              header="ProductID"
+              sortable
+              style={{ width: "20%" }}
+            ></Column>
+            <Column
+              field="ProductName"
+              header="Ingredient"
+              sortable
+              style={{ width: "30%" }}
+            ></Column>
+            <Column
+              field="UnitsInStock"
+              header="Remain"
+              sortable
+              style={{ width: "25%" }}
+            ></Column>
+            <Column
+              field="LastUpdate"
+              header="LastUpdate"
+              sortable
+              body={(data, options) => formatDate(data)}
+              style={{ width: "25%" }}
+            ></Column>
+            <Column
+              headerStyle={{ width: "4rem" }}
+              body={(data) => actionAdd(data)}
+            ></Column>
+          </DataTable>
         </div>
       </div>
-    // </body>
+      <Dialog
+        header="Add Stock"
+        visible={visible}
+        onHide={() => setVisible(false)}
+        style={{ width: "35vw" }}
+        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+        // footer={footerContent}
+      >
+        <div className="p-inputgroup">
+          <span className="p-inputgroup-addon" style={{ width: "20rem" }}>
+            Remain
+          </span>
+          {/* <label htmlFor="minmax-buttons" className="font-bold block mb-2">Min-Max Boundaries</label> */}
+          <InputNumber
+            inputId="minmax-buttons"
+            value={countItem}
+            onValueChange={(e) => setCountItem(e.value)}
+            mode="decimal"
+            showButtons
+            min={0}
+            max={100}
+          />
+        </div>
+      </Dialog>
+    </div>
   );
 }

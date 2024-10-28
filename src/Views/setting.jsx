@@ -75,146 +75,146 @@ export default function AddStock() {
     return incrementedValue;
   }
 
-  const AddProduct = async () => {
-    const objectsArray = Object.values(tableData);
-    const lastObject = objectsArray[objectsArray.length - 1];
-    const runID = incrementValue(lastObject.ID);
-    if (
-      productID === "" ||
-      productName === "" ||
-      branch === "" ||
-      productDescription === "" ||
-      maximumUnits === "" ||
-      minimumUnits === "" ||
-      unitsPrice === "" ||
-      unitsInStock === "" ||
-      unitsOnOrder === "" ||
-      type === "" ||
-      day === "" ||
-      updateBy === ""
-    ) {
-      console.log(runID)
-      Swal.fire({
-        title: "โปรดกรอกข้อมูลทั้งหมดให้ครบถ้วน",
-        customClass: { container: "my-sweetalert-container-class" },
-      });
-      return;
-    }
+  // const AddProduct = async () => {
+  //   const objectsArray = Object.values(tableData);
+  //   const lastObject = objectsArray[objectsArray.length - 1];
+  //   const runID = incrementValue(lastObject.ID);
+  //   if (
+  //     productID === "" ||
+  //     productName === "" ||
+  //     branch === "" ||
+  //     productDescription === "" ||
+  //     maximumUnits === "" ||
+  //     minimumUnits === "" ||
+  //     unitsPrice === "" ||
+  //     unitsInStock === "" ||
+  //     unitsOnOrder === "" ||
+  //     type === "" ||
+  //     day === "" ||
+  //     updateBy === ""
+  //   ) {
+  //     console.log(runID)
+  //     Swal.fire({
+  //       title: "โปรดกรอกข้อมูลทั้งหมดให้ครบถ้วน",
+  //       customClass: { container: "my-sweetalert-container-class" },
+  //     });
+  //     return;
+  //   }
 
-    Swal.fire({
-      title: "Do you want to save?",
-      customClass: { container: "my-sweetalert-container-class" },
-      showCancelButton: true,
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Save",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        httpClient
-          .post("/api/"+mainPage, {
-            ID: runID,
-            productID: productID,
-            productName: productName,
-            branch: branch,
-            productDescription: productDescription,
-            maximumUnits: maximumUnits,
-            minimumUnits: minimumUnits,
-            unitsPrice: unitsPrice,
-            unitsInStock: unitsInStock,
-            unitsOnOrder: unitsOnOrder,
-            type: type,
-            day: day,
-            updateBy: updateBy,
-          })
-          .then(function (response) {
-            console.log(response);
-            if (response.data.message !== "success") {
-              setDialogAdd(false);
-              getProduct();
-              return Swal.fire({
-                customClass: { container: "my-sweetalert-container-class" },
-                title: "Error!",
-                text: response.data.message,
-                icon: "error",
-                confirmButtonText: "OK",
-              });
-            } else {
-              Swal.fire("Save Success");
-              getProduct();
-            }
-          })
-          .catch(function (error) {
-            setDialogAdd(false);
-            Swal.fire({
-              title: "Error!",
-              text: error,
-              icon: "error",
-              confirmButtonText: "OK",
-            });
-            getProduct();
-          });
-      }
-    });
-  };
+  //   Swal.fire({
+  //     title: "Do you want to save?",
+  //     customClass: { container: "my-sweetalert-container-class" },
+  //     showCancelButton: true,
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Save",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       httpClient
+  //         .post("/api/"+mainPage, {
+  //           ID: runID,
+  //           productID: productID,
+  //           productName: productName,
+  //           branch: branch,
+  //           productDescription: productDescription,
+  //           maximumUnits: maximumUnits,
+  //           minimumUnits: minimumUnits,
+  //           unitsPrice: unitsPrice,
+  //           unitsInStock: unitsInStock,
+  //           unitsOnOrder: unitsOnOrder,
+  //           type: type,
+  //           day: day,
+  //           updateBy: updateBy,
+  //         })
+  //         .then(function (response) {
+  //           console.log(response);
+  //           if (response.data.message !== "success") {
+  //             setDialogAdd(false);
+  //             getProduct();
+  //             return Swal.fire({
+  //               customClass: { container: "my-sweetalert-container-class" },
+  //               title: "Error!",
+  //               text: response.data.message,
+  //               icon: "error",
+  //               confirmButtonText: "OK",
+  //             });
+  //           } else {
+  //             Swal.fire("Save Success");
+  //             getProduct();
+  //           }
+  //         })
+  //         .catch(function (error) {
+  //           setDialogAdd(false);
+  //           Swal.fire({
+  //             title: "Error!",
+  //             text: error,
+  //             icon: "error",
+  //             confirmButtonText: "OK",
+  //           });
+  //           getProduct();
+  //         });
+  //     }
+  //   });
+  // };
 
-  const updateProduct = async () => {
-    // console.log(Item)
-    Swal.fire({
-      title: "Are you sure?",
-      customClass: { container: "my-sweetalert-container-class" },
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .put("/api/" + mainPage, {
-            ID: Item.ID,
-            UnitInStock: countItem,
-            UpdateBy: updateBy,
-          })
-          .then((res) => {
-            if (res.data.message !== "success") {
-              Swal.fire(res.data.message, "Error");
-              setVisible(false);
-              getProduct();
-            } else {
-              Swal.fire("Update Success", "success");
-              setVisible(false);
-              getProduct();
-            }
-          });
-      }
-    });
-  };
+  // const updateProduct = async () => {
+  //   // console.log(Item)
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     customClass: { container: "my-sweetalert-container-class" },
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       axios
+  //         .put("/api/" + mainPage, {
+  //           ID: Item.ID,
+  //           UnitInStock: countItem,
+  //           UpdateBy: updateBy,
+  //         })
+  //         .then((res) => {
+  //           if (res.data.message !== "success") {
+  //             Swal.fire(res.data.message, "Error");
+  //             setVisible(false);
+  //             getProduct();
+  //           } else {
+  //             Swal.fire("Update Success", "success");
+  //             setVisible(false);
+  //             getProduct();
+  //           }
+  //         });
+  //     }
+  //   });
+  // };
 
-  const DeleteProduct = async (data) => {
-    Swal.fire({
-      title: "Are you sure?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        axios
-          .delete("/api/"+ mainPage, {
-            ID: data.ProductID,
-          })
-          .then((res) => {
-            if (res.data.message !== "success") {
-              Swal.fire(res.data.message, "Error");
-              getProduct();
-            } else {
-              Swal.fire("Deleted!", "success");
-              getProduct();
-            }
-          });
-      }
-    });
-  };
+  // const DeleteProduct = async (data) => {
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes, delete it!",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       axios
+  //         .delete("/api/"+ mainPage, {
+  //           ID: data.ProductID,
+  //         })
+  //         .then((res) => {
+  //           if (res.data.message !== "success") {
+  //             Swal.fire(res.data.message, "Error");
+  //             getProduct();
+  //           } else {
+  //             Swal.fire("Deleted!", "success");
+  //             getProduct();
+  //           }
+  //         });
+  //     }
+  //   });
+  // };
 
   useEffect(() => {
     getProduct();
@@ -335,9 +335,7 @@ export default function AddStock() {
   const header = renderHeader();
 
   return (
-    // <body>
     <div className="layout-page">
-      <div>
         <div className="align-items-left">
           <Button
             label="Back"
@@ -350,8 +348,11 @@ export default function AddStock() {
         <div style={{ paddingTop: "16px" }}>
           <Card title="Setting">
             <div className="row justify-content-center gap-4">
-              <div className="col-sm-10">
-                <Card title="Product">
+              <div className="col-sm-12">
+                <h2 className="flex justify-content-center">
+                  ****** Wait NewFeatures ******
+                </h2>
+                {/* <Card title="Product">
                   <DataTable
                     header={header}
                     filters={filters}
@@ -416,7 +417,7 @@ export default function AddStock() {
                       body={(data) => actionEdit(data)}
                     ></Column>
                   </DataTable>
-                </Card>
+                </Card> */}
               </div>
             </div>
           </Card>
@@ -525,7 +526,6 @@ export default function AddStock() {
             </span>
           </div>
         </Dialog>
-      </div>
     </div>
     // </body>
   );

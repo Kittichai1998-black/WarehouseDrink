@@ -5,23 +5,21 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { Dropdown } from "primereact/dropdown";
-import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
 
 import { httpClient } from "../axios/HttpClient.jsx";
-import FormEditStock from "./form/edit-stock.jsx";
+import FormAddProducts from "./form/add-products.jsx";
+import FormEditProducts from "./form/edit-products.jsx";
 import dayjs from "dayjs";
 
 import "../css/table.css";
 
 // import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
 
-export default function CheckStock() {
+export default function AddProducts() {
   const navigate = useNavigate();
   const mainPage = localStorage.getItem("mainPage");
   const [product, setProduct] = useState([]);
-  const [sortedProducts, setSortedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedTopping, setSelectedTopping] = useState(null);
   const [globalFilterValue, setGlobalFilterValue] = useState("");
@@ -30,8 +28,6 @@ export default function CheckStock() {
   const [visible, setVisible] = useState(false);
   const [editForm, setEditForm] = useState(false);
   const [metaKey, setMetaKey] = useState(true);
-  const [selectedStatus, setSelectedStatus] = useState("instock");
-  const [sortOption, setSortOption] = useState("");
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
@@ -39,8 +35,7 @@ export default function CheckStock() {
   const getProduct = async () => {
     const response = await httpClient.get("/api/products");
     setProduct(response.data.result);
-    setSortedProducts(response.data.result);
-    // console.log(response.data.result);
+    console.log(response);
   };
 
   const products = Object.values(product).map((item) => ({
@@ -54,7 +49,39 @@ export default function CheckStock() {
     expirationDate: item.expirationDate,
     reserved: item.reserved,
   }));
-  
+
+  // const updateProduct = async () => {
+  //   // console.log(Item)
+  //   Swal.fire({
+  //     title: "Are you sure?",
+  //     customClass: { container: "my-sweetalert-container-class" },
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes",
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       axios
+  //         .put("/api/" + mainPage + "/addstock", {
+  //           ID: Item.ID,
+  //           UnitsInStock: countItem,
+  //           UpdateBy: updateBy,
+  //         })
+  //         .then((res) => {
+  //           if (res.data.message !== "success") {
+  //             Swal.fire(res.data.message, "Error");
+  //             setVisible(false);
+  //             getProduct();
+  //           } else {
+  //             Swal.fire("Update Success", "success");
+  //             setVisible(false);
+  //             getProduct();
+  //           }
+  //         });
+  //     }
+  //   });
+  // };
 
   const rowClass = (data) => {
     return {
@@ -68,35 +95,6 @@ export default function CheckStock() {
 
     _filters["global"].value = value;
     setFilters(_filters);
-  };
-
-  const statusStock = [
-    { label: "In Stock", value: "instock" },
-    { label: "Low Stock", value: "lowstock" },
-    { label: "Out Of Stock", value: "outofstock" },
-  ];
-
-  const sortProducts = (option) => {
-    let sorted = [...products];
-    switch (option) {
-      case "lowstock":
-        sorted = sorted.filter(product => product.stockInStore <= product.reorderPoint);
-        break;
-      case "outofstock":
-        sorted = sorted.filter(product => product.stockInStore === 0);
-        break;
-      case "all":
-      default:
-        sorted = products; // แสดงทั้งหมด
-        break;
-    }
-    setSortedProducts(sorted);
-  };
-
-  // ฟังก์ชันเรียกเมื่อเลือกค่าใน Dropdown
-  const onSortChange = (e) => {
-    setSortOption(e.value);
-    sortProducts(e.value);
   };
 
   const renderHeader = () => {
@@ -117,64 +115,60 @@ export default function CheckStock() {
     );
   };
 
+  function labelItemName(data) {
+    setVisible(true);
+    setEditForm(true);
+    setItem(data);
+  }
+
   const formatDate = (date) => {
     return dayjs(date).format("DD-MM-YYYY");
   };
 
-  const statusBodyTemplate = (product) => {
-    if (product.stockInStore <= product.reorderPoint) {
-      return <Tag value="lowstock" severity={getSeverity("lowstock")}></Tag>;
-    }
-    if (product.stockInStore == 0) {
-      return (
-        <Tag value="outofstock" severity={getSeverity("outofstock")}></Tag>
-      );
-    } else {
-      return <Tag value="instock" severity={getSeverity("instock")}></Tag>;
-    }
+  const actionEdit = (data) => {
+    return (
+      <Button
+        icon="pi pi-pencil"
+        severity="warning"
+        aria-label="Add"
+        size="small"
+        onClick={() => labelItemName(data)}
+      />
+    );
   };
 
-  const getSeverity = (product) => {
-    switch (product.status) {
-      case "instock":
-        return "success";
-
-      case "lowstock":
-        return "warning";
-
-      case "outofstock":
-        return "danger";
-
-      default:
-        return null;
-    }
+  const handleToggle = (status) => {
+    setVisible(status); //ปิด - เปิด dialog
   };
 
-  const convertlabelCategory = (item) => {
-    switch (item.categoryId) {
-      case 1:
-        return "วัตถุดิบ";
-
-      case 2:
-        return "บรรจุภัณฑ์";
-
-      case 3:
-        return "ท็อปปิ้ง";
-
-      default:
-        return null;
-    }
-  };
+  // const footerContent = (
+  //   <div>
+  //     <Button
+  //       label="Save"
+  //       icon="pi pi-check"
+  //       severity="info"
+  //       size="small"
+  //       onClick={() => updateProduct()}
+  //     />
+  //          <Button
+  //       label="Cancel"
+  //       icon="pi pi-times"
+  //       severity="danger"
+  //       size="small"
+  //       onClick={() => setVisible(false)}
+  //     />
+  //   </div>
+  // );
 
   const header = renderHeader();
 
   useEffect(() => {
     getProduct();
-    debugger
   }, []);
 
   return (
     <div className="layout-page">
+      {/* <div className="card"> */}
       {/* <div className="align-items-left">
             <Button
               label="Back"
@@ -184,23 +178,28 @@ export default function CheckStock() {
               onClick={() => navigate("/mainwarehouse")}
             />
           </div> */}
+      {/* <div style={{ paddingTop: "16px" }}> */}
+      {/* <Card> */}
+      {/* <p className="w-2 text-left font-bold text-black-alpha-60 mr-3 text-3xl w-10">
+        AddProducts
+      </p> */}
+      <div className="pb-3 flex justify-content-start">
+        <Button
+          label="Add"
+          icon="pi pi-plus"
+          severity="info"
+          raised
+          onClick={() => setVisible(true)}
+        />
+      </div>
+
       <div className="row justify-content-center gap-4">
-        <div className="flex justify-content-start">
-          <p className="pr-4">สถานะ Stock :</p>
-          <Dropdown
-                value={sortOption} 
-                options={statusStock} 
-                onChange={onSortChange} 
-                placeholder="Select Stock Status" 
-          />
-        </div>
         <div className="col-sm-12">
           <DataTable
             header={header}
             filters={filters}
             onFilter={(e) => setFilters(e.filters)}
             value={products}
-            // sortOrder={sortOrder}
             showGridlines
             stripedRows
             sortField="ProductID"
@@ -230,11 +229,6 @@ export default function CheckStock() {
               body={(data, options) => options.rowIndex + 1}
             ></Column>
             <Column
-              header="Status"
-              body={statusBodyTemplate}
-              headerStyle={{ width: "5%" }}
-            ></Column>
-            <Column
               field="productId"
               header="ProductID"
               sortable
@@ -253,23 +247,10 @@ export default function CheckStock() {
               style={{ width: "30%" }}
             ></Column>
             <Column
-              field="categoryId"
-              header="Category"
-              sortable
-              body={(data, options) => convertlabelCategory(data)}
-              style={{ width: "30%" }}
-            ></Column>
-            <Column
-              field="stockInStore"
-              header="StockInStore"
+              field="stockInWarehouse"
+              header="StockInWarehouse"
               sortable
               style={{ width: "25%" }}
-            ></Column>
-            <Column
-              field="reorderPoint"
-              header="ReorderPoint"
-              sortable
-              style={{ width: "20%" }}
             ></Column>
             <Column
               field="expirationDate"
@@ -285,13 +266,29 @@ export default function CheckStock() {
               body={(data, options) => formatDate(data.lastUpdated)}
               style={{ width: "25%" }}
             ></Column>
-            {/* <Column
+            <Column
               headerStyle={{ width: "4rem" }}
               body={(data) => actionEdit(data)}
-            ></Column> */}
+            ></Column>
           </DataTable>
         </div>
       </div>
+      <Dialog
+        header={editForm ? "Edit Product" : "Add Product"}
+        visible={visible}
+        onHide={() => setVisible(false)}
+        style={{ width: "50vw" }}
+        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+        // footer={footerContent}
+      >
+        <div>
+          {editForm ? (
+            <FormEditProducts onToggle={handleToggle} items={Item} />
+          ) : (
+            <FormAddProducts onToggle={handleToggle} />
+          )}
+        </div>
+      </Dialog>
     </div>
   );
 }

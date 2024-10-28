@@ -4,6 +4,14 @@ import "../../css/home.css";
 // import '../index.css/'
 import WarehouseStock from "../../assets/imgs/Warehouse-1.png";
 import ProductStock from "../../assets/imgs/ProductStock.png";
+// import OverViewIcon from "../../assets/icons/overview-disable-icon.png";
+// import AddStockIcon from "../../assets/icons/addstock-disable-icon.png";
+// import CheckStockIcon from "../../assets/icons/checkstock-disable-icon.png";
+// import SettingIcon from "../../assets/icons/setting-disable-icon.png";
+import OverViewIcon from "../../assets/icons/overview-icon.png";
+import AddStockIcon from "../../assets/icons/addstock-icon.png";
+import CheckStockIcon from "../../assets/icons/checkstock-icon.png";
+import SettingIcon from "../../assets/icons/setting-icon.png";
 
 function Home() {
   const [count, setCount] = useState(0);
@@ -98,9 +106,8 @@ function Home() {
                   src={OverViewIcon}
                   className="img-menu"
                 />
-              </div> */}
-              {/* <h4 style={{ color: '#65647C', textDecoration: 'none' }}>Overview</h4> */}
-            {/* </div>
+              </div> 
+            </div>
             <div className="col-sm-3 rowbox-items">
               <div className="border-items">
                 <img
@@ -128,6 +135,48 @@ function Home() {
           </div>
         </div>
       </footer> */}
+      <footer>
+        <div className="tabmenu-main">
+          <div className="row">
+            <div className="col-sm-3 rowbox-items">
+              <div className="border-items">
+                <a
+                  href="/mainwarehouse"
+                  className="highlight"
+                  style={{ textDecoration: "none" }}
+                >
+                  <img src={OverViewIcon} className="img-menu" />
+                </a>
+              </div>
+              {/* <h4 style={{ color: '#65647C', textDecoration: 'none' }}>Overview</h4> */}
+            </div>
+            <div className="col-sm-3 rowbox-items">
+              <div className="border-items">
+                <a href="/mainstore" style={{ textDecoration: "none" }}>
+                  <img src={AddStockIcon} className="img-menu" />
+                  {/* <h4 style={{ color: '#65647C' }}>Add Stock</h4> */}
+                </a>
+              </div>
+            </div>
+            <div className="col-sm-3 rowbox-items">
+              <div className="border-items">
+                <a href="/mainstore" style={{ textDecoration: "none" }}>
+                  <img src={CheckStockIcon} className="img-menu" />
+                  {/* <h4 style={{ color: '#65647C' }}>Check Stock</h4> */}
+                </a>
+              </div>
+            </div>
+            <div className="col-sm-3 rowbox-items">
+              <div className="border-items">
+                <a href="/setting" style={{ textDecoration: "none" }}>
+                  <img src={SettingIcon} className="img-menu" />
+                  {/* <h4 style={{ color: '#65647C' }}>Setting</h4> */}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default function OverView() {
 });
 
 const getProduct = async () => {
-  const response = await httpClient.get("/api/"+ mainPage);
+  const response = await httpClient.get("/api/products");
   setProduct(response.data.result);
   console.log(response);
 };
@@ -50,10 +50,6 @@ const getProduct = async () => {
     UnitsPrice: product[key].UnitsPrice,
     UpdateBy: product[key].UpdateBy
   }));
-
-  useEffect(() => {
-    getProduct();
-  }, []);
 
   const rowClass = (data) => {
     return {
@@ -95,10 +91,14 @@ const getProduct = async () => {
 
 const header = renderHeader();
 
+useEffect(() => {
+  getProduct();
+}, []);
+
   return (
     // <body>
       <div className="layout-page">
-        <div className="card">
+        {/* <div className="card"> */}
           {/* <div className="align-items-left">
             <Button
               label="Back"
@@ -109,8 +109,8 @@ const header = renderHeader();
             />
           </div> */}
           {/* <div style={{paddingTop:"16px"}}> */}
-            <Card>
-             <p class="w-2 text-left font-bold text-black-alpha-60 mr-3 text-3xl w-10">OverView</p>
+            {/* <Card> */}
+             <p className="w-2 text-left font-bold text-black-alpha-60 mr-3 text-3xl w-10">OverView</p>
               <div className="row justify-content-center gap-4">
                 <div className="col-sm-12">
                   {/* <Card title="Product"> */}
@@ -175,9 +175,9 @@ const header = renderHeader();
                   {/* </Card> */}
                 </div>
               </div>
-            </Card>
+            {/* </Card> */}
           {/* </div> */}
-        </div>
+        {/* </div> */}
       </div>
     // </body>
   );
