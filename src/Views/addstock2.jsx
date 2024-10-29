@@ -177,7 +177,8 @@ export default function AddStock() {
             />
           </div> */}
       <div className="row justify-content-center gap-4">
-        <div className="col-sm-12">
+        <div className="card col-sm-12">
+        <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">Add Stock</p>
           <DataTable
             header={header}
             filters={filters}

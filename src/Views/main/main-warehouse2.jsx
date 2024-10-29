@@ -5,14 +5,14 @@ import "primereact/resources/themes/saga-blue/theme.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 import { Card } from "primereact/card";
-import Overview from "../addproducts";
+import Warehouse from "../addproducts";
 // import AddProducts from "../addproducts";
 
 function MainWarehouse2() {
-  const [activePage, setActivePage] = useState("overview");
+  const [activePage, setActivePage] = useState("warehouse");
 
   const nodes = [
-    { key: "overview", label: "Overview", icon: "pi pi-table" },
+    { key: "warehouse", label: "Warehouse", icon: "pi pi-table" },
     // { key: "addproducts", label: "Add Product", icon: "pi pi-file-edit" },
   ];
 
@@ -22,12 +22,12 @@ function MainWarehouse2() {
 
   const renderActivePage = () => {
     switch (activePage) {
-      case "overview":
-        return <Overview />;
+      case "warehouse":
+        return <Warehouse />;
       // case "addproducts":
       //   return <AddProducts />;
       default:
-        return <Overview />;
+        return <Warehouse />;
     }
   };
 

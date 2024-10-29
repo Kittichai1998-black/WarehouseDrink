@@ -8,8 +8,8 @@ import Home from '../Views/main/home';
 // import Home2 from '../Views/main/home2';
 import MainWarehouse2 from '../Views/main/main-warehouse2';
 import MainStore2 from '../Views/main/main-store2'
-import Overview from '../Views/overview';
-import AddStock from '../Views/addstock';
+import Overview from '../Views/main/overview';
+import AddStock from '../Views/addstock2';
 import CheckStock from '../Views/checkstock';
 import Setting from '../Views/setting';
 import ErrorPage from "../error-page404";

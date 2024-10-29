@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import { isNullOrUndef } from "chart.js/helpers";
 
 const categories = [
   { label: "วัตถุดิบ", value: 1 },
@@ -24,7 +25,18 @@ export default function ProductForm({ onToggle }) {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      productId: "",
+      productName: "",
+      description: "",
+      categoryId: null,
+      stockInWarehouse: null,
+      stockInStore: null,
+      expirationDate: null,
+      reorderPoint: null,
+    },
+  });
   const mainPage = localStorage.getItem("mainPage");
   const [submitted, setSubmitted] = useState(false);
   const [value, setValue] = useState("");
@@ -34,7 +46,7 @@ export default function ProductForm({ onToggle }) {
     console.log(data);
     try {
       setLoading(true);
-    //   const response = await axios.post("/api/" + mainPage, data);
+      //   const response = await axios.post("/api/" + mainPage, data);
       const response = await httpClient.post("/api/products", data);
       console.log("Response:", response.data);
 
@@ -77,8 +89,10 @@ export default function ProductForm({ onToggle }) {
               name="productId"
               control={control}
               rules={{ required: " กรุณาระบุรหัสสินค้า" }}
-            //   disabled={true}
-              render={({ field }) => <InputText placeholder="P000..." id="productId" {...field} />}
+              //   disabled={true}
+              render={({ field }) => (
+                <InputText placeholder="P000..." id="productId" {...field} />
+              )}
             />
             {errors.productId && (
               <small className="p-error">{errors.productId.message}</small>
@@ -162,7 +176,7 @@ export default function ProductForm({ onToggle }) {
           </div>
 
           {/* สต็อกในร้าน */}
-          <div className="sm:col-12 md:col-12 lg:col-3">
+          {/* <div className="sm:col-12 md:col-12 lg:col-3">
             <label htmlFor="stockInStore">จำนวนในสต็อกร้าน</label>
           </div>
           <div className="sm:col-12 md:col-12 lg:col-3">
@@ -177,13 +191,14 @@ export default function ProductForm({ onToggle }) {
                   onValueChange={(e) => field.onChange(e.value)}
                   mode="decimal"
                   min={0}
+                  disabled={true}
                 />
               )}
             />
             {errors.stockInStore && (
               <small className="p-error">{errors.stockInStore.message}</small>
             )}
-          </div>
+          </div> */}
 
           {/* Reorder Point */}
           <div className="sm:col-12 md:col-12 lg:col-3">
@@ -244,7 +259,6 @@ export default function ProductForm({ onToggle }) {
             loading={loading}
           />
         </div>
-
       </form>
     </div>
   );

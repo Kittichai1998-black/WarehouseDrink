@@ -175,7 +175,7 @@ export default function ProductForm({ onToggle , items}) {
           </div>
 
           {/* สต็อกในร้าน */}
-          <div className="sm:col-12 md:col-12 lg:col-3">
+          {/* <div className="sm:col-12 md:col-12 lg:col-3">
             <label htmlFor="stockInStore">จำนวนในสต็อกร้าน</label>
           </div>
           <div className="sm:col-12 md:col-12 lg:col-3">
@@ -196,7 +196,7 @@ export default function ProductForm({ onToggle , items}) {
             {errors.stockInStore && (
               <small className="p-error">{errors.stockInStore.message}</small>
             )}
-          </div>
+          </div> */}
 
           {/* Reorder Point */}
           <div className="sm:col-12 md:col-12 lg:col-3">

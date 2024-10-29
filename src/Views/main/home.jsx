@@ -25,8 +25,18 @@ function Home() {
     setCountProduct(response.data.result);
   };
 
+  function NevigateToOverview() {
+    navigate('/overview');
+    // localStorage.setItem("mainPage","warehouse");
+  }
+
   function NevigateToStock() {
     navigate('/mainstore');
+    localStorage.setItem("mainPage","stock");
+  }
+
+  function NevigateToCheckStock() {
+    navigate('/checkstock');
     localStorage.setItem("mainPage","stock");
   }
 
@@ -160,7 +170,7 @@ function Home() {
                 
                   className="highlight"
                   style={{ textDecoration: "none" }}
-                  onClick={NevigateToWarehouse}
+                  onClick={NevigateToOverview}
                 >
                   <img src={OverViewIcon} className="img-menu" />
                 </a>
@@ -177,7 +187,7 @@ function Home() {
             </div>
             <div className="col-sm-3 rowbox-items">
               <div className="border-items">
-                <a style={{ textDecoration: "none" }} onClick={NevigateToStock}>
+                <a style={{ textDecoration: "none" }} onClick={NevigateToCheckStock}>
                   <img src={CheckStockIcon} className="img-menu" />
                   {/* <h4 style={{ color: '#65647C' }}>Check Stock</h4> */}
                 </a>

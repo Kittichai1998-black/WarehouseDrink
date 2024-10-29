@@ -121,6 +121,11 @@ export default function AddProducts() {
     setItem(data);
   }
 
+  function actionAdd() {
+    setEditForm(false);
+    setVisible(true)
+  }
+
   const formatDate = (date) => {
     return dayjs(date).format("DD-MM-YYYY");
   };
@@ -189,7 +194,7 @@ export default function AddProducts() {
           icon="pi pi-plus"
           severity="info"
           raised
-          onClick={() => setVisible(true)}
+          onClick={actionAdd}
         />
       </div>
 

@@ -54,7 +54,6 @@ export default function CheckStock() {
     expirationDate: item.expirationDate,
     reserved: item.reserved,
   }));
-  
 
   const rowClass = (data) => {
     return {
@@ -80,10 +79,12 @@ export default function CheckStock() {
     let sorted = [...products];
     switch (option) {
       case "lowstock":
-        sorted = sorted.filter(product => product.stockInStore <= product.reorderPoint);
+        sorted = sorted.filter(
+          (product) => product.stockInStore <= product.reorderPoint
+        );
         break;
       case "outofstock":
-        sorted = sorted.filter(product => product.stockInStore === 0);
+        sorted = sorted.filter((product) => product.stockInStore === 0);
         break;
       case "all":
       default:
@@ -170,7 +171,7 @@ export default function CheckStock() {
 
   useEffect(() => {
     getProduct();
-    debugger
+    debugger;
   }, []);
 
   return (
@@ -185,111 +186,117 @@ export default function CheckStock() {
             />
           </div> */}
       <div className="row justify-content-center gap-4">
-        <div className="flex justify-content-start">
-          <p className="pr-4">สถานะ Stock :</p>
-          <Dropdown
-                value={sortOption} 
-                options={statusStock} 
-                onChange={onSortChange} 
-                placeholder="Select Stock Status" 
-          />
-        </div>
-        <div className="col-sm-12">
-          <DataTable
-            header={header}
-            filters={filters}
-            onFilter={(e) => setFilters(e.filters)}
-            value={products}
-            // sortOrder={sortOrder}
-            showGridlines
-            stripedRows
-            sortField="ProductID"
-            scrollable
-            scrollHeight="auto"
-            size="small"
-            rowClassName={rowClass}
-            selection={selectedProduct}
-            onSelectionChange={(e) => setSelectedProduct(e.value)}
-            selectionMode="single"
-            dataKey="ProductID"
-            metaKeySelection={metaKey}
-            rowHover
-            paginator
-            rows={5}
-            // rowsPerPageOptions={[5, 10, 25]}
-            // tableStyle={{
-            //   minWidth: "50rem",
-            //   minHeight: 400,
-            // }}
-            paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-            currentPageReportTemplate="{first} to {last} of {totalRecords}"
-          >
-            <Column
-              header="No."
-              headerStyle={{ width: "3%" }}
-              body={(data, options) => options.rowIndex + 1}
-            ></Column>
-            <Column
-              header="Status"
-              body={statusBodyTemplate}
-              headerStyle={{ width: "5%" }}
-            ></Column>
-            <Column
-              field="productId"
-              header="ProductID"
-              sortable
-              style={{ width: "20%" }}
-            ></Column>
-            <Column
-              field="productName"
-              header="Ingredient"
-              sortable
-              style={{ width: "30%" }}
-            ></Column>
-            <Column
-              field="description"
-              header="Description"
-              sortable
-              style={{ width: "30%" }}
-            ></Column>
-            <Column
-              field="categoryId"
-              header="Category"
-              sortable
-              body={(data, options) => convertlabelCategory(data)}
-              style={{ width: "30%" }}
-            ></Column>
-            <Column
-              field="stockInStore"
-              header="StockInStore"
-              sortable
-              style={{ width: "25%" }}
-            ></Column>
-            <Column
-              field="reorderPoint"
-              header="ReorderPoint"
-              sortable
-              style={{ width: "20%" }}
-            ></Column>
-            <Column
-              field="expirationDate"
-              header="ExpirationDate"
-              sortable
-              body={(data, options) => formatDate(data.expirationDate)}
-              style={{ width: "25%" }}
-            ></Column>
-            <Column
-              field="lastUpdated"
-              header="LastUpdate"
-              sortable
-              body={(data, options) => formatDate(data.lastUpdated)}
-              style={{ width: "25%" }}
-            ></Column>
-            {/* <Column
+        <div className="card col-sm-12">
+          <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
+            Check Stock
+          </p>
+          {/* <div className="flex justify-content-start"> */}
+          <div className="p-inputgroup w-full md:w-20rem">
+            <p className="pr-4">สถานะ Stock :</p>
+            <Dropdown
+              value={sortOption}
+              options={statusStock}
+              onChange={onSortChange}
+              placeholder="Select Stock Status"
+            />
+          </div>
+          <div className="pt-4">
+            <DataTable
+              header={header}
+              filters={filters}
+              onFilter={(e) => setFilters(e.filters)}
+              value={products}
+              // sortOrder={sortOrder}
+              showGridlines
+              stripedRows
+              sortField="ProductID"
+              scrollable
+              scrollHeight="auto"
+              size="small"
+              rowClassName={rowClass}
+              selection={selectedProduct}
+              onSelectionChange={(e) => setSelectedProduct(e.value)}
+              selectionMode="single"
+              dataKey="ProductID"
+              metaKeySelection={metaKey}
+              rowHover
+              paginator
+              rows={5}
+              // rowsPerPageOptions={[5, 10, 25]}
+              // tableStyle={{
+              //   minWidth: "50rem",
+              //   minHeight: 400,
+              // }}
+              paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+              currentPageReportTemplate="{first} to {last} of {totalRecords}"
+            >
+              <Column
+                header="No."
+                headerStyle={{ width: "3%" }}
+                body={(data, options) => options.rowIndex + 1}
+              ></Column>
+              <Column
+                header="Status"
+                body={statusBodyTemplate}
+                headerStyle={{ width: "5%" }}
+              ></Column>
+              <Column
+                field="productId"
+                header="ProductID"
+                sortable
+                style={{ width: "20%" }}
+              ></Column>
+              <Column
+                field="productName"
+                header="Ingredient"
+                sortable
+                style={{ width: "30%" }}
+              ></Column>
+              <Column
+                field="description"
+                header="Description"
+                sortable
+                style={{ width: "30%" }}
+              ></Column>
+              <Column
+                field="categoryId"
+                header="Category"
+                sortable
+                body={(data, options) => convertlabelCategory(data)}
+                style={{ width: "30%" }}
+              ></Column>
+              <Column
+                field="stockInStore"
+                header="StockInStore"
+                sortable
+                style={{ width: "25%" }}
+              ></Column>
+              <Column
+                field="reorderPoint"
+                header="ReorderPoint"
+                sortable
+                style={{ width: "20%" }}
+              ></Column>
+              <Column
+                field="expirationDate"
+                header="ExpirationDate"
+                sortable
+                body={(data, options) => formatDate(data.expirationDate)}
+                style={{ width: "25%" }}
+              ></Column>
+              <Column
+                field="lastUpdated"
+                header="LastUpdate"
+                sortable
+                body={(data, options) => formatDate(data.lastUpdated)}
+                style={{ width: "25%" }}
+              ></Column>
+              {/* <Column
               headerStyle={{ width: "4rem" }}
               body={(data) => actionEdit(data)}
             ></Column> */}
-          </DataTable>
+            </DataTable>
+          </div>
         </div>
       </div>
     </div>
