@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
 
-export default function StackedBarDemo() {
+export default function StackedBarToMonth() {
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
 
@@ -11,19 +11,19 @@ export default function StackedBarDemo() {
         const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
         const data = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม'],
             datasets: [
                 {
                     type: 'bar',
                     label: 'รับเข้า',
                     backgroundColor: documentStyle.getPropertyValue('--blue-500'),
-                    data: [50, 25, 12, 48, 90, 76, 42]
+                    data: [50, 25, 12, 48, 90, 76, 10]
                 },
                 {
                     type: 'bar',
                     label: 'เบิกออก',
                     backgroundColor: documentStyle.getPropertyValue('--green-500'),
-                    data: [21, 84, 24, 75, 37, 65, 34]
+                    data: [21, 84, 24, 75, 56, 65, 34]
                 }
             ]
         };

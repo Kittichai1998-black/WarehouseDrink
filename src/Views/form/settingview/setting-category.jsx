@@ -6,38 +6,29 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { httpClient } from "../axios/HttpClient.jsx";
-import FormAddProducts from "./form/add-products.jsx";
-import FormEditProducts from "./form/edit-products.jsx";
+
+import { httpClient } from "../../../axios/HttpClient.jsx";
+import AddCategoryForm from "../add-category.jsx";
+import EditCategoryForm from "../edit-category.jsx";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 
-import "../css/table.css";
+import "../../../css/table.css";
 
 // import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
 
-export default function AddProducts() {
-  const navigate = useNavigate();
+export default function SettingCategory() {
+  // const navigate = useNavigate();
   // const mainPage = localStorage.getItem("mainPage");
-  const [product, setProduct] = useState([]);
+  const [category, setCategory] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedTopping, setSelectedTopping] = useState(null);
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [countItem, setCountItem] = useState(0);
   const [Item, setItem] = useState("");
   const [visible, setVisible] = useState(false);
   const [editForm, setEditForm] = useState(false);
-  const [metaKey, setMetaKey] = useState(true);
+  // const [metaKey, setMetaKey] = useState(true);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-
-  // const rowClass = (data) => {
-  //   return {
-  //     "bg-red-400": data.UnitsInStock < 10,
-  //   };
-  // };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -71,14 +62,14 @@ export default function AddProducts() {
     setItem(data);
   }
 
+  const formatDate = (date) => {
+    return dayjs(date).format("DD-MM-YYYY");
+  };
+
   function actionAdd() {
     setEditForm(false);
     setVisible(true);
   }
-
-  const formatDate = (date) => {
-    return dayjs(date).format("DD-MM-YYYY");
-  };
 
   const actionEdit = (data) => {
     return (
@@ -123,26 +114,27 @@ export default function AddProducts() {
   }
 
   const handleToggle = (status) => {
-    setVisible(status); //ปิด - เปิด dialog
+    setVisible(status);
   };
 
   const header = renderHeader();
 
   useEffect(() => {
-    const getProduct = async () => {
+    const getCategory = async () => {
       try {
         const response = await httpClient.get(
-          "/api/productController/product"
+          "/api/settingController/category"
         );
-        const products = response.data.result || response.data;
-        const formattedProduct = products.filter((prod) => prod.isActive === "A");
-        setProduct(formattedProduct);
+        const categories = response.data.result || response.data;
+        const formattedCategories = categories.filter(
+          (cat) => cat.isActive === "A"
+        );
+        setCategory(formattedCategories);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
-    
-    getProduct();
+    getCategory();
   }, []);
 
   return (
@@ -156,34 +148,30 @@ export default function AddProducts() {
           onClick={actionAdd}
         />
       </div>
-
       <div className="row justify-content-center gap-4">
-        <div className="col-sm-12">
+        <div className="card col-sm-12">
+          <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
+            Category
+          </p>
           <DataTable
             header={header}
             filters={filters}
             onFilter={(e) => setFilters(e.filters)}
-            value={product}
+            value={category}
             showGridlines
             stripedRows
-            // sortField="productId"
+            sortField="categoryId"
             scrollable
             scrollHeight="auto"
             size="small"
-            // rowClassName={rowClass}
-            selection={selectedProduct}
-            onSelectionChange={(e) => setSelectedProduct(e.value)}
+            // selection={selectedProduct}
+            // onSelectionChange={(e) => setSelectedProduct(e.value)}
             selectionMode="single"
-            // dataKey="ProductID"
+            dataKey="categoryId"
             // metaKeySelection={metaKey}
             rowHover
             paginator
             rows={5}
-            rowsPerPageOptions={[5, 10]}
-            // tableStyle={{
-            //   minWidth: "50rem",
-            //   minHeight: 400,
-            // }}
             paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
             currentPageReportTemplate="{first} to {last} of {totalRecords}"
           >
@@ -193,63 +181,51 @@ export default function AddProducts() {
               body={(data, options) => options.rowIndex + 1}
             ></Column>
             <Column
-              headerStyle={{ width: "10rem" }}
+              headerStyle={{ width: "4rem" }}
               body={(data) => actionEdit(data)}
             ></Column>
             {/* <Column
-              field="productId"
-              header="ProductID"
+              field="categoryId"
+              header="CategoryID"
               sortable
               style={{ width: "20%" }}
             ></Column> */}
             <Column
-              field="productName"
-              header="Ingredient"
+              field="categoryName"
+              header="CategoryName"
               sortable
               style={{ width: "30%" }}
             ></Column>
             <Column
-              field="description"
-              header="Description"
+              field="createDate"
+              header="CreateDate"
+              body={(data, options) => formatDate(data.createDate)}
               sortable
               style={{ width: "30%" }}
-            ></Column>
-            <Column
-              field="stockInWarehouse"
-              header="StockInWarehouse"
-              sortable
-              style={{ width: "25%" }}
-            ></Column>
-            <Column
-              field="expirationDate"
-              header="ExpirationDate"
-              sortable
-              body={(data, options) => formatDate(data.expirationDate)}
-              style={{ width: "25%" }}
             ></Column>
             <Column
               field="lastUpdated"
               header="LastUpdate"
-              sortable
               body={(data, options) => formatDate(data.lastUpdated)}
+              sortable
               style={{ width: "25%" }}
             ></Column>
           </DataTable>
         </div>
       </div>
       <Dialog
-        header={editForm ? "Edit Product" : "Add Product"}
+        header={editForm ? "Edit Category" : "Add Category"}
         visible={visible}
         onHide={() => setVisible(false)}
-        style={{ width: "50vw" }}
+        style={{ width: "26vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
         // footer={footerContent}
       >
         <div>
           {editForm ? (
-            <FormEditProducts onToggle={handleToggle} items={Item} />
+            <EditCategoryForm onToggle={handleToggle} items={Item} />
           ) : (
-            <FormAddProducts onToggle={handleToggle} />
+            <AddCategoryForm onToggle={handleToggle} />
           )}
         </div>
       </Dialog>

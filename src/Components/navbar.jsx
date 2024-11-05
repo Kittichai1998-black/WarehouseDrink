@@ -21,6 +21,7 @@ function Navbar() {
   }
 
   function Logout() {
+    // localStorage.removeItem("token");
     localStorage.clear();
     window.location.reload();
   }
@@ -28,7 +29,7 @@ function Navbar() {
   const menu = useRef(null);
   const items = [
     {
-      label: "Warehouse",
+      label: "Products",
       icon: "pi pi-home",
       command: () => {
         NevigateToWarehouse();

@@ -12,15 +12,10 @@ function Authentication() {
   const [hidePass, setHidePass] = useState();
 
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  
   async function login() {
-    console.log(username, password);
-    // if(username == "admin"){
-    //   navigate("/")
-    // }
-    // return
     await httpClient
-      .post("/api/login", {
+      .post("/api/logincontroller/login", {
         username: username,
         password: password,
       })
@@ -35,8 +30,9 @@ function Authentication() {
             confirmButtonText: "OK",
           });
         } else {
-          localStorage.setItem("userName", response.data.result.Fullname);
-          localStorage.setItem("isLoggedIn", true);
+          localStorage.setItem("token", response.data.result.token);
+          localStorage.setItem("userName", response.data.result.fullName);
+          // localStorage.setItem("isLoggedIn", true); // เก็บสถานะการเข้าสู่ระบบ
           navigate("/");
         }
       })

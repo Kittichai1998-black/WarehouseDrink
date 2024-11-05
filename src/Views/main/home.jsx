@@ -19,12 +19,6 @@ function Home() {
   const [countProduct, setCountProduct] = useState([]);
   const navigate = useNavigate();
 
-  const getProduct = async () => {
-    const response = await httpClient.get("/api/stock");
-    const dataArray = Object.values(response.data.result); // แปลงข้อมูลเป็นอาร์เรย์
-    setCountProduct(response.data.result);
-  };
-
   function NevigateToOverview() {
     navigate('/overview');
     // localStorage.setItem("mainPage","warehouse");
@@ -53,7 +47,6 @@ function Home() {
   // const itemsWithLowStock = dataArray.filter((item) => item.UnitsInStock < 10);
 
   useEffect(() => {
-    getProduct();
   }, []);
 
   return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Calendar } from "primereact/calendar";
 import { InputNumber } from "primereact/inputnumber";
@@ -12,42 +12,29 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import { isNullOrUndef } from "chart.js/helpers";
 
-const categories = [
-  { label: "วัตถุดิบ", value: 1 },
-  { label: "บรรจุภัณฑ์", value: 2 },
-  { label: "ท็อปปิ้ง", value: 3 },
-];
-
 export default function ProductForm({ onToggle }) {
-  const [loading, setLoading] = useState(false); // สถานะ Loading
+  const [loading, setLoading] = useState(false); 
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
-    defaultValues: {
-      productId: "",
-      productName: "",
-      description: "",
-      categoryId: null,
-      stockInWarehouse: null,
-      stockInStore: null,
-      expirationDate: null,
-      reorderPoint: null,
-    },
-  });
-  const mainPage = localStorage.getItem("mainPage");
+  } = useForm();
+
   const [submitted, setSubmitted] = useState(false);
   const [value, setValue] = useState("");
   const [isToggled, setIsToggled] = useState(false);
+  const [category, setCategory] = useState([]);
+  const [warehouse, setWarehouse] = useState([]);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       setLoading(true);
-      //   const response = await axios.post("/api/" + mainPage, data);
-      const response = await httpClient.post("/api/products", data);
+      const response = await httpClient.post(
+        "/api/productController/product",
+        data
+      );
       console.log("Response:", response.data);
 
       Swal.fire({
@@ -63,7 +50,7 @@ export default function ProductForm({ onToggle }) {
 
       reset();
     } catch (error) {
-      console.error("Error:", error);
+      // console.error("Error:", error); F
 
       Swal.fire({
         icon: "error",
@@ -76,12 +63,52 @@ export default function ProductForm({ onToggle }) {
     }
   };
 
+  useEffect(() => {
+    const getCategory = async () => {
+      try {
+        const response = await httpClient.get(
+          "/api/settingController/category"
+        );
+        const categories = response.data.result || response.data;
+        const formattedCategories = categories
+          .filter((cat) => cat.isActive === "A")
+          .map((cat) => ({
+            label: cat.categoryName,
+            value: cat.categoryId,
+          }));
+        setCategory(formattedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    getCategory();
+
+    const getWarehouse = async () => {
+      try {
+        const response = await httpClient.get(
+          "/api/settingController/warehouse"
+        );
+        const warehouse = response.data.result || response.data;
+        const formattedWarehouse = warehouse
+          .filter((wh) => wh.isActive === "A")
+          .map((wh) => ({
+            label: wh.warehouseName,
+            value: wh.warehouseId,
+          }));
+        setWarehouse(formattedWarehouse);
+      } catch (error) {
+        console.error("Error fetching warehouse:", error);
+      }
+    };
+    getWarehouse();
+  }, []);
+
   return (
     <div className="card flex justify-content-center">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid">
           {/* รหัสสินค้า */}
-          <div className="sm:col-12 md:col-6 lg:col-3">
+          {/* <div className="sm:col-12 md:col-12 lg:col-3">
             <label htmlFor="productId">รหัสสินค้า</label>
           </div>
           <div className="sm:col-12 md:col-12 lg:col-3">
@@ -97,7 +124,7 @@ export default function ProductForm({ onToggle }) {
             {errors.productId && (
               <small className="p-error">{errors.productId.message}</small>
             )}
-          </div>
+          </div> */}
 
           {/* ชื่อสินค้า */}
           <div className="sm:col-12 md:col-12 lg:col-3">
@@ -141,11 +168,36 @@ export default function ProductForm({ onToggle }) {
               control={control}
               rules={{ required: " กรุณาเลือกหมวดหมู่สินค้า" }}
               render={({ field }) => (
-                <Dropdown id="categoryId" options={categories} {...field} />
+                <Dropdown
+                  id="categoryId"
+                  options={category}
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="เลือกหมวดหมู่"
+                  {...field}
+                />
               )}
             />
             {errors.category && (
               <small className="p-error">{errors.category.message}</small>
+            )}
+          </div>
+
+          {/* คลัง */}
+          <div className="sm:col-12 md:col-12 lg:col-3">
+            <label htmlFor="category">คลังสินค้า</label>
+          </div>
+          <div className="sm:col-12 md:col-12 lg:col-3">
+            <Controller
+              name="warehouseId"
+              control={control}
+              rules={{ required: " กรุณาเลือกคลังสินค้า" }}
+              render={({ field }) => (
+                <Dropdown id="warehouseId" options={warehouse} {...field} />
+              )}
+            />
+            {errors.warehouse && (
+              <small className="p-error">{errors.warehouse.message}</small>
             )}
           </div>
 

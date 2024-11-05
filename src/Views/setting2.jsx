@@ -4,16 +4,19 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
-import { Card } from "primereact/card";
-import Products from "../addproducts";
-// import AddProducts from "../addproducts";
+import Users from "../Views/form/settingview/setting-users";
+import Role from "../Views/form/settingview/setting-role";
+import Warehouse from "../Views/form/settingview/setting-warehouse";
+import Category from "../Views/form/settingview/setting-category";
 
-function MainWarehouse2() {
-  const [activePage, setActivePage] = useState("warehouse");
+function Setting2() {
+  const [activePage, setActivePage] = useState("overview");
 
   const nodes = [
-    { key: "products", label: "Products", icon: "pi pi-table" },
-    // { key: "addproducts", label: "Add Product", icon: "pi pi-file-edit" },
+    { key: "users", label: "Users", icon: "pi pi-user-edit" },
+    { key: "roles", label: "Roles", icon: "pi pi-verified" },
+    { key: "category", label: "Category", icon: "pi pi-sitemap" },
+    { key: "warehouse", label: "Warehouse", icon: "pi pi-home" },
   ];
 
   const handleMenuSelect = (event) => {
@@ -22,12 +25,16 @@ function MainWarehouse2() {
 
   const renderActivePage = () => {
     switch (activePage) {
-      case "products":
-        return <Products />;
-      // case "addproducts":
-      //   return <AddProducts />;
+      case "users":
+        return <Users />;
+      case "roles":
+        return <Role />;
+      case "warehouse":
+        return <Warehouse />;
+      case "category":
+        return <Category />;
       default:
-        return <Products />;
+        return <Users />;
     }
   };
 
@@ -41,7 +48,9 @@ function MainWarehouse2() {
       <div className="sm:col-12 md:col-10 lg:col-10 xl:col-10">
         <div className="mx-3 mt-3 text-center p-3 border-round-sm bg-white font-bold">
           <div className="flex align-items-center border-bottom-1 surface-border surface-overlay w-full">
-            <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">Products</p>
+            <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
+              Setting
+            </p>
           </div>
           {renderActivePage()}
         </div>
@@ -55,10 +64,10 @@ function SidebarMenu({ nodes, onSelect }) {
     <Tree
       value={nodes}
       selectionMode="single"
-      onSelect={onSelect} // เรียกฟังก์ชันเมื่อมีการเลือกเมนู
+      onSelect={onSelect}
       className="p-m-2"
     />
   );
 }
 
-export default MainWarehouse2;
+export default Setting2;

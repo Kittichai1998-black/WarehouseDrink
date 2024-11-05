@@ -6,38 +6,35 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { httpClient } from "../axios/HttpClient.jsx";
-import FormAddProducts from "./form/add-products.jsx";
-import FormEditProducts from "./form/edit-products.jsx";
-import dayjs from "dayjs";
-import Swal from "sweetalert2";
 
-import "../css/table.css";
+import { httpClient } from "../../../axios/HttpClient.jsx";
+import AddUserForm from "../add-user.jsx";
+import EditUserForm from "../edit-user.jsx";
+import dayjs from "dayjs";
+import Swal from "sweetalert2"; 
+
+import "../../../css/table.css";
 
 // import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
 
-export default function AddProducts() {
-  const navigate = useNavigate();
+export default function SettingUsers() {
+  // const navigate = useNavigate();
   // const mainPage = localStorage.getItem("mainPage");
-  const [product, setProduct] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedTopping, setSelectedTopping] = useState(null);
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [countItem, setCountItem] = useState(0);
+  const [settingUsers, setSettingUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [Item, setItem] = useState("");
   const [visible, setVisible] = useState(false);
   const [editForm, setEditForm] = useState(false);
-  const [metaKey, setMetaKey] = useState(true);
+  // const [metaKey, setMetaKey] = useState(true);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
-  // const rowClass = (data) => {
-  //   return {
-  //     "bg-red-400": data.UnitsInStock < 10,
-  //   };
-  // };
+  const rowClass = (data) => {
+    return {
+      "bg-red-400": data.UnitsInStock < 10,
+    };
+  };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -71,14 +68,14 @@ export default function AddProducts() {
     setItem(data);
   }
 
+  const formatDate = (date) => {
+    return dayjs(date).format("DD-MM-YYYY");
+  };
+
   function actionAdd() {
     setEditForm(false);
     setVisible(true);
   }
-
-  const formatDate = (date) => {
-    return dayjs(date).format("DD-MM-YYYY");
-  };
 
   const actionEdit = (data) => {
     return (
@@ -101,48 +98,40 @@ export default function AddProducts() {
     );
   };
 
-  const confirmDelete = async() => {
+  const confirmDelete = async () => {
     Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes"
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // const deleteProduct = await httpClient.delete(`/api/productController/product/${data.productId}`);
-      Swal.fire({
-        title: "Deleted!",
-        text: "Your file has been deleted.",
-        icon: "success"
-      });
-    }
-  });
-  }
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // const deleteProduct = await httpClient.delete(`/api/productController/product/${data.productId}`);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    });
+  };
 
   const handleToggle = (status) => {
-    setVisible(status); //ปิด - เปิด dialog
+    setVisible(status);
   };
 
   const header = renderHeader();
 
   useEffect(() => {
-    const getProduct = async () => {
-      try {
-        const response = await httpClient.get(
-          "/api/productController/product"
-        );
-        const products = response.data.result || response.data;
-        const formattedProduct = products.filter((prod) => prod.isActive === "A");
-        setProduct(formattedProduct);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
+    const getUsers = async () => {
+      const response = await httpClient.get("/api/loginController/users");
+      setSettingUsers(response.data.result);
+      console.log(response);
     };
-    
-    getProduct();
+    getUsers();
   }, []);
 
   return (
@@ -156,30 +145,32 @@ export default function AddProducts() {
           onClick={actionAdd}
         />
       </div>
-
       <div className="row justify-content-center gap-4">
-        <div className="col-sm-12">
+        <div className="card col-sm-12">
+          <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
+            Users
+          </p>
           <DataTable
             header={header}
             filters={filters}
             onFilter={(e) => setFilters(e.filters)}
-            value={product}
+            value={settingUsers}
             showGridlines
             stripedRows
-            // sortField="productId"
+            sortField="createDate"
             scrollable
             scrollHeight="auto"
             size="small"
-            // rowClassName={rowClass}
-            selection={selectedProduct}
-            onSelectionChange={(e) => setSelectedProduct(e.value)}
+            rowClassName={rowClass}
+            selection={selectedUser}
+            onSelectionChange={(e) => setSelectedUser(e.value)}
             selectionMode="single"
-            // dataKey="ProductID"
+            dataKey="userId"
             // metaKeySelection={metaKey}
             rowHover
             paginator
             rows={5}
-            rowsPerPageOptions={[5, 10]}
+            // rowsPerPageOptions={[5, 10, 25]}
             // tableStyle={{
             //   minWidth: "50rem",
             //   minHeight: 400,
@@ -193,63 +184,51 @@ export default function AddProducts() {
               body={(data, options) => options.rowIndex + 1}
             ></Column>
             <Column
-              headerStyle={{ width: "10rem" }}
+              headerStyle={{ width: "4rem" }}
               body={(data) => actionEdit(data)}
             ></Column>
-            {/* <Column
-              field="productId"
-              header="ProductID"
+            <Column
+              field="username"
+              header="Username"
               sortable
               style={{ width: "20%" }}
-            ></Column> */}
+            ></Column>
             <Column
-              field="productName"
-              header="Ingredient"
+              field="fullName"
+              header="FullName"
               sortable
               style={{ width: "30%" }}
             ></Column>
             <Column
-              field="description"
-              header="Description"
+              field="createDate"
+              header="CreateDate"
+              body={(data, options) => formatDate(data.createDate)}
               sortable
               style={{ width: "30%" }}
-            ></Column>
-            <Column
-              field="stockInWarehouse"
-              header="StockInWarehouse"
-              sortable
-              style={{ width: "25%" }}
-            ></Column>
-            <Column
-              field="expirationDate"
-              header="ExpirationDate"
-              sortable
-              body={(data, options) => formatDate(data.expirationDate)}
-              style={{ width: "25%" }}
             ></Column>
             <Column
               field="lastUpdated"
               header="LastUpdate"
-              sortable
               body={(data, options) => formatDate(data.lastUpdated)}
+              sortable
               style={{ width: "25%" }}
             ></Column>
           </DataTable>
         </div>
       </div>
       <Dialog
-        header={editForm ? "Edit Product" : "Add Product"}
+        header={editForm ? "Edit User" : "Add User"}
         visible={visible}
         onHide={() => setVisible(false)}
-        style={{ width: "50vw" }}
+        style={{ width: "22vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
         // footer={footerContent}
       >
         <div>
           {editForm ? (
-            <FormEditProducts onToggle={handleToggle} items={Item} />
+            <EditUserForm onToggle={handleToggle} items={Item} />
           ) : (
-            <FormAddProducts onToggle={handleToggle} />
+            <AddUserForm onToggle={handleToggle} />
           )}
         </div>
       </Dialog>
