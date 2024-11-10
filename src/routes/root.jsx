@@ -10,8 +10,7 @@ import MainStore2 from "../Views/main/main-store2";
 import Overview from "../Views/main/overview";
 import AddStock from "../Views/addstock2";
 import CheckStock from "../Views/checkstock";
-import Setting from "../Views/setting";
-import Setting2 from "../Views/setting2";
+import Setting from "../Views/setting2";
 import ErrorPage from "../error-page404";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
@@ -68,7 +67,7 @@ function Root() {
         <Route path="/overview" element={<Overview />} />
         <Route path="/addstock" element={<AddStock />} />
         <Route path="/checkstock" element={<CheckStock />} />
-        <Route path="/setting" element={<Setting2 />} />
+        <Route path="/setting" element={<Setting />} />
 
         <Route path="/login" element={<Login />} />
 

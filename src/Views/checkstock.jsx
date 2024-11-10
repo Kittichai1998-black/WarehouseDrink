@@ -10,7 +10,7 @@ import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
 
 import { httpClient } from "../axios/HttpClient.jsx";
-import FormEditStock from "./form/edit-stock.jsx";
+// import FormEditStock from "./form/edit-stock.jsx";
 import dayjs from "dayjs";
 
 import "../css/table.css";
@@ -18,48 +18,12 @@ import "../css/table.css";
 // import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
 
 export default function CheckStock() {
-  const navigate = useNavigate();
-  const mainPage = localStorage.getItem("mainPage");
   const [product, setProduct] = useState([]);
-  const [sortedProducts, setSortedProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedTopping, setSelectedTopping] = useState(null);
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [countItem, setCountItem] = useState(0);
-  const [Item, setItem] = useState("");
-  const [visible, setVisible] = useState(false);
-  const [editForm, setEditForm] = useState(false);
-  const [metaKey, setMetaKey] = useState(true);
-  const [selectedStatus, setSelectedStatus] = useState("instock");
   const [sortOption, setSortOption] = useState("");
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-
-  const getProduct = async () => {
-    const response = await httpClient.get("/api/products");
-    setProduct(response.data.result);
-    setSortedProducts(response.data.result);
-    // console.log(response.data.result);
-  };
-
-  const products = Object.values(product).map((item) => ({
-    productId: item.productId,
-    productName: item.productName,
-    categoryId: item.categoryId,
-    stockInWarehouse: item.stockInWarehouse,
-    stockInStore: item.stockInStore,
-    description: item.description,
-    reorderPoint: item.reorderPoint,
-    expirationDate: item.expirationDate,
-    reserved: item.reserved,
-  }));
-
-  const rowClass = (data) => {
-    return {
-      "bg-red-400": data.UnitsInStock < 10,
-    };
-  };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -73,31 +37,13 @@ export default function CheckStock() {
     { label: "In Stock", value: "instock" },
     { label: "Low Stock", value: "lowstock" },
     { label: "Out Of Stock", value: "outofstock" },
+    { label: "All", value: "all" },
   ];
 
-  const sortProducts = (option) => {
-    let sorted = [...products];
-    switch (option) {
-      case "lowstock":
-        sorted = sorted.filter(
-          (product) => product.stockInStore <= product.reorderPoint
-        );
-        break;
-      case "outofstock":
-        sorted = sorted.filter((product) => product.stockInStore === 0);
-        break;
-      case "all":
-      default:
-        sorted = products; // แสดงทั้งหมด
-        break;
-    }
-    setSortedProducts(sorted);
-  };
-
-  // ฟังก์ชันเรียกเมื่อเลือกค่าใน Dropdown
   const onSortChange = (e) => {
+    // debugger
     setSortOption(e.value);
-    sortProducts(e.value);
+    // sortProducts(e.value);
   };
 
   const renderHeader = () => {
@@ -118,6 +64,20 @@ export default function CheckStock() {
     );
   };
 
+  const actionEdit = (data) => {
+    return (
+      <div className="flex gap-1">
+        <Button
+          icon="pi pi-list"
+          severity="info"
+          aria-label="History"
+          size="small"
+          // onClick={() => labelItemName(data)}
+        />
+      </div>
+    );
+  };
+
   const formatDate = (date) => {
     return dayjs(date).format("DD-MM-YYYY");
   };
@@ -130,15 +90,15 @@ export default function CheckStock() {
       return (
         <Tag value="outofstock" severity={getSeverity("outofstock")}></Tag>
       );
-    } else {
+    } if (product.stockInStore >= product.reorderPoint) {
       return <Tag value="instock" severity={getSeverity("instock")}></Tag>;
     }
   };
 
   const getSeverity = (product) => {
-    switch (product.status) {
+    switch (product) {
       case "instock":
-        return "success";
+        return "primary";
 
       case "lowstock":
         return "warning";
@@ -170,9 +130,18 @@ export default function CheckStock() {
   const header = renderHeader();
 
   useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const response = await httpClient.get("/api/productController/product/"+ sortOption);
+        const products = response.data.result || response.data;
+        setProduct(products);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
     getProduct();
-    debugger;
-  }, []);
+  }, [sortOption]);
 
   return (
     <div className="layout-page">
@@ -205,7 +174,7 @@ export default function CheckStock() {
               header={header}
               filters={filters}
               onFilter={(e) => setFilters(e.filters)}
-              value={products}
+              value={product}
               // sortOrder={sortOrder}
               showGridlines
               stripedRows
@@ -213,12 +182,12 @@ export default function CheckStock() {
               scrollable
               scrollHeight="auto"
               size="small"
-              rowClassName={rowClass}
+              // rowClassName={rowClass}
               selection={selectedProduct}
-              onSelectionChange={(e) => setSelectedProduct(e.value)}
+              // onSelectionChange={(e) => setSelectedProduct(e.value)}
               selectionMode="single"
-              dataKey="ProductID"
-              metaKeySelection={metaKey}
+              // dataKey="ProductID"
+              // metaKeySelection={metaKey}
               rowHover
               paginator
               rows={5}
@@ -240,12 +209,16 @@ export default function CheckStock() {
                 body={statusBodyTemplate}
                 headerStyle={{ width: "5%" }}
               ></Column>
-              <Column
+              {/* <Column
                 field="productId"
                 header="ProductID"
                 sortable
                 style={{ width: "20%" }}
-              ></Column>
+              ></Column> */}
+                 <Column
+              headerStyle={{ width: "10rem" }}
+              body={(data) => actionEdit(data)}
+            ></Column>
               <Column
                 field="productName"
                 header="Ingredient"

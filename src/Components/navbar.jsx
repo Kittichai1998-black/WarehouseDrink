@@ -2,8 +2,6 @@ import React, { useRef } from "react";
 import { Button } from "primereact/button";
 import { TieredMenu } from "primereact/tieredmenu";
 import { Menubar } from "primereact/menubar";
-import { InputText } from "primereact/inputtext";
-import { Badge } from "primereact/badge";
 import { useNavigate } from "react-router-dom";
 
 function Navbar() {

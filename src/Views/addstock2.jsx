@@ -8,7 +8,7 @@ import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 
 import { httpClient } from "../axios/HttpClient.jsx";
-import FormEditStock from "./form/edit-stock.jsx";
+import IssueProductForm from "./form/issue-product.jsx";
 import dayjs from "dayjs";
 
 import "../css/table.css";
@@ -30,63 +30,6 @@ export default function AddStock() {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-
-  const getProduct = async () => {
-    const response = await httpClient.get("/api/products");
-    setProduct(response.data.result);
-    console.log(response);
-  };
-
-  const products = Object.values(product).map((item) => ({
-    productId: item.productId,
-    productName: item.productName,
-    categoryId: item.categoryId,
-    stockInWarehouse: item.stockInWarehouse,
-    stockInStore: item.stockInStore,
-    description: item.description,
-    reorderPoint: item.reorderPoint,
-    expirationDate: item.expirationDate,
-    reserved: item.reserved,
-  }));
-
-  // const updateProduct = async () => {
-  //   // console.log(Item)
-  //   Swal.fire({
-  //     title: "Are you sure?",
-  //     customClass: { container: "my-sweetalert-container-class" },
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes",
-  //   }).then((result) => {
-  //     if (result.isConfirmed) {
-  //       axios
-  //         .put("/api/" + mainPage + "/addstock", {
-  //           ID: Item.ID,
-  //           UnitsInStock: countItem,
-  //           UpdateBy: updateBy,
-  //         })
-  //         .then((res) => {
-  //           if (res.data.message !== "success") {
-  //             Swal.fire(res.data.message, "Error");
-  //             setVisible(false);
-  //             getProduct();
-  //           } else {
-  //             Swal.fire("Update Success", "success");
-  //             setVisible(false);
-  //             getProduct();
-  //           }
-  //         });
-  //     }
-  //   });
-  // };
-
-  const rowClass = (data) => {
-    return {
-      "bg-red-400": data.UnitsInStock < 10,
-    };
-  };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -124,11 +67,16 @@ export default function AddStock() {
     return dayjs(date).format("DD-MM-YYYY");
   };
 
+  // function actionAdd() {
+  //   setEditForm(false);
+  //   setVisible(true);
+  // }
+
   const actionEdit = (data) => {
     return (
       <Button
-        icon="pi pi-pencil"
-        severity="warning"
+        icon="pi pi-plus"
+        severity="primary"
         aria-label="Add"
         size="small"
         onClick={() => labelItemName(data)}
@@ -140,62 +88,57 @@ export default function AddStock() {
     setVisible(status); //ปิด - เปิด dialog
   };
 
-  // const footerContent = (
-  //   <div>
-  //     <Button
-  //       label="Save"
-  //       icon="pi pi-check"
-  //       severity="info"
-  //       size="small"
-  //       onClick={() => updateProduct()}
-  //     />
-  //          <Button
-  //       label="Cancel"
-  //       icon="pi pi-times"
-  //       severity="danger"
-  //       size="small"
-  //       onClick={() => setVisible(false)}
-  //     />
-  //   </div>
-  // );
-
   const header = renderHeader();
 
   useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const response = await httpClient.get("/api/productController/product");
+        const products = response.data.result || response.data;
+        const formattedProduct = products.filter(
+          (prod) => prod.isActive === "A"
+        );
+        setProduct(formattedProduct);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
     getProduct();
   }, []);
 
   return (
     <div className="layout-page">
-      {/* <div className="align-items-left">
-            <Button
-              label="Back"
-              icon="pi pi-angle-left"
-              severity="info"
-              size="small"
-              onClick={() => navigate("/mainwarehouse")}
-            />
-          </div> */}
+      {/* <div className="pb-3 flex justify-content-start">
+        <Button
+          label="Add Stock"
+          icon="pi pi-plus"
+          severity="info"
+          raised
+          onClick={actionAdd}
+        />
+      </div> */}
       <div className="row justify-content-center gap-4">
         <div className="card col-sm-12">
-        <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">Add Stock</p>
+          <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
+            Add Stock
+          </p>
           <DataTable
             header={header}
             filters={filters}
             onFilter={(e) => setFilters(e.filters)}
-            value={products}
+            value={product}
             showGridlines
             stripedRows
             sortField="ProductID"
             scrollable
             scrollHeight="auto"
             size="small"
-            rowClassName={rowClass}
             selection={selectedProduct}
-            onSelectionChange={(e) => setSelectedProduct(e.value)}
+            // onSelectionChange={(e) => setSelectedProduct(e.value)}
             selectionMode="single"
-            dataKey="ProductID"
-            metaKeySelection={metaKey}
+            // dataKey="ProductID"
+            // metaKeySelection={metaKey}
             rowHover
             paginator
             rows={5}
@@ -213,8 +156,12 @@ export default function AddStock() {
               body={(data, options) => options.rowIndex + 1}
             ></Column>
             <Column
-              field="productId"
-              header="ProductID"
+              headerStyle={{ width: "4rem" }}
+              body={(data) => actionEdit(data)}
+            ></Column>
+            <Column
+              field="productName"
+              header="ProductName"
               sortable
               style={{ width: "20%" }}
             ></Column>
@@ -250,23 +197,19 @@ export default function AddStock() {
               body={(data, options) => formatDate(data.lastUpdated)}
               style={{ width: "25%" }}
             ></Column>
-            <Column
-              headerStyle={{ width: "4rem" }}
-              body={(data) => actionEdit(data)}
-            ></Column>
           </DataTable>
         </div>
       </div>
       <Dialog
-        header={editForm ? "Edit Stock" : "Add Product"}
+        header="Add Stock"
         visible={visible}
         onHide={() => setVisible(false)}
-        style={{ width: "50vw" }}
+        style={{ width: "25vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
         // footer={footerContent}
       >
         <div>
-            <FormEditStock onToggle={handleToggle} items={Item} />
+          <IssueProductForm onToggle={handleToggle} items={Item} />
         </div>
       </Dialog>
     </div>

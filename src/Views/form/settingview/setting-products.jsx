@@ -6,38 +6,25 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
-import { httpClient } from "../axios/HttpClient.jsx";
-import FormAddProducts from "./form/add-products.jsx";
-import FormEditProducts from "./form/edit-products.jsx";
+
+import { httpClient } from "../../../axios/HttpClient.jsx";
+import AddProductForm from "../add-products.jsx";
+import EditProductForm from "../edit-products.jsx";
 import dayjs from "dayjs";
 import Swal from "sweetalert2";
 
-import "../css/table.css";
+import "../../../css/table.css";
 
-// import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
-
-export default function AddProducts() {
-  const navigate = useNavigate();
-  // const mainPage = localStorage.getItem("mainPage");
+export default function SettingProducts() {
   const [product, setProduct] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedTopping, setSelectedTopping] = useState(null);
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [countItem, setCountItem] = useState(0);
   const [Item, setItem] = useState("");
   const [visible, setVisible] = useState(false);
   const [editForm, setEditForm] = useState(false);
-  const [metaKey, setMetaKey] = useState(true);
+  // const [metaKey, setMetaKey] = useState(true);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
-
-  // const rowClass = (data) => {
-  //   return {
-  //     "bg-red-400": data.UnitsInStock < 10,
-  //   };
-  // };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -71,14 +58,14 @@ export default function AddProducts() {
     setItem(data);
   }
 
+  const formatDate = (date) => {
+    return dayjs(date).format("DD-MM-YYYY");
+  };
+
   function actionAdd() {
     setEditForm(false);
     setVisible(true);
   }
-
-  const formatDate = (date) => {
-    return dayjs(date).format("DD-MM-YYYY");
-  };
 
   const actionEdit = (data) => {
     return (
@@ -123,7 +110,7 @@ export default function AddProducts() {
   }
 
   const handleToggle = (status) => {
-    setVisible(status); //ปิด - เปิด dialog
+    setVisible(status);
   };
 
   const header = renderHeader();
@@ -135,13 +122,14 @@ export default function AddProducts() {
           "/api/productController/product"
         );
         const products = response.data.result || response.data;
-        const formattedProduct = products.filter((prod) => prod.isActive === "A");
-        setProduct(formattedProduct);
+        const formattedProducts = products.filter(
+          (pros) => pros.isActive === "A"
+        );
+        setProduct(formattedProducts);
       } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error("Error fetching products:", error);
       }
     };
-    
     getProduct();
   }, []);
 
@@ -156,9 +144,11 @@ export default function AddProducts() {
           onClick={actionAdd}
         />
       </div>
-
       <div className="row justify-content-center gap-4">
-        <div className="col-sm-12">
+        <div className="card col-sm-12">
+          <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
+            Product
+          </p>
           <DataTable
             header={header}
             filters={filters}
@@ -247,9 +237,9 @@ export default function AddProducts() {
       >
         <div>
           {editForm ? (
-            <FormEditProducts onToggle={handleToggle} items={Item} />
+            <EditProductForm onToggle={handleToggle} items={Item} />
           ) : (
-            <FormAddProducts onToggle={handleToggle} />
+            <AddProductForm onToggle={handleToggle} />
           )}
         </div>
       </Dialog>

@@ -165,7 +165,7 @@ export default function SettingUsers() {
             selection={selectedUser}
             onSelectionChange={(e) => setSelectedUser(e.value)}
             selectionMode="single"
-            dataKey="userId"
+            // dataKey="userId"
             // metaKeySelection={metaKey}
             rowHover
             paginator

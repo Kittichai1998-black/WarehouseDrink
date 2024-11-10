@@ -25,18 +25,18 @@ function Home() {
   }
 
   function NevigateToStock() {
-    navigate('/mainstore');
-    localStorage.setItem("mainPage","stock");
+    navigate('/addstock');
+    // localStorage.setItem("mainPage","stock");
   }
 
   function NevigateToCheckStock() {
     navigate('/checkstock');
-    localStorage.setItem("mainPage","stock");
+    // localStorage.setItem("mainPage","stock");
   }
 
   function NevigateToWarehouse() {
     navigate('/mainwarehouse');
-    localStorage.setItem("mainPage","warehouse");
+    // localStorage.setItem("mainPage","warehouse");
   }
 
   function NevigateToSetting() {
@@ -57,9 +57,9 @@ function Home() {
               <div className="row">
                 <div className="col-sm-6">
                   <div className="header-text">
-                    <h1 className="card-title" style={{ color: "#fff" }}>
-                      Warehouse Center
-                    </h1>
+                    {/* <h1 className="card-title" style={{ color: "#fff" }}>
+                      Warehouse
+                    </h1> */}
                     <p
                       style={{
                         backgroundColor: "#379237",
@@ -69,7 +69,7 @@ function Home() {
                         fontSize: "30px",
                       }}
                     >
-                      Stock Status
+                      Warehouse
                     </p>
                     <a style={{ textDecoration: "none" }} onClick={NevigateToWarehouse}>
                       <div className="hover01">
@@ -87,9 +87,9 @@ function Home() {
                 </div>
                 <div className="col-sm-6">
                   <div className="header-text">
-                    <h1 className="card-title color-stock">
+                    {/* <h1 className="card-title color-stock">
                       Store Stock
-                    </h1>
+                    </h1> */}
                     <p
                       style={{
                         backgroundColor: "#FC4F00",
@@ -99,7 +99,7 @@ function Home() {
                         fontSize: "30px",
                       }}
                     >
-                      Need Order 0 items
+                      Store Stock
                     </p>
 
                     <a style={{ textDecoration: "none" }} onClick={NevigateToStock}>

@@ -7,9 +7,8 @@ axios.interceptors.request.use(async (config)=> {
 //   if (jwtToken != null) {
 //       config.headers = { 'x-access-token': jwtToken }
 //   }
-  // config.url = join('http://localhost:8091' , config.url); //localhost
-  
-  config.url = join('https://us-central1-node-backend-wh-84bfa.cloudfunctions.net/app', config.url); //hosting firebase function by node js
+  config.url = join('http://localhost:8091' , config.url); //localhost 
+  // config.url = join('https://us-central1-node-backend-wh-84bfa.cloudfunctions.net/app', config.url); //hosting firebase function by node js
   return config;
   
 });

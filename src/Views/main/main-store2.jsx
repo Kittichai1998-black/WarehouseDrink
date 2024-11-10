@@ -4,7 +4,7 @@ import "primereact/resources/primereact.min.css";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
-import Overview from "../addstock2";
+import AddStock from "../addstock2";
 // import AddStock from "../addstock";
 import CheckStock from "../checkstock";
 
@@ -24,13 +24,13 @@ function MainWarehouse2() {
   const renderActivePage = () => {
     switch (activePage) {
       case "addStock":
-        return <Overview />;
+        return <AddStock />;
       // case "addstock":
       //   return <AddStock />;
       case "checkstock":
         return <CheckStock />;
       default:
-        return <Overview />;
+        return <AddStock />;
     }
   };
 

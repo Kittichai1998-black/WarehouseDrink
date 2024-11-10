@@ -1,39 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
-import { Calendar } from "primereact/calendar";
-import { InputNumber } from "primereact/inputnumber";
+import { Checkbox } from "primereact/checkbox";
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 import { useForm, Controller } from "react-hook-form";
-import { useLocation } from "react-router-dom";
 import { httpClient } from "../../axios/HttpClient.jsx";
 import Swal from "sweetalert2";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
-export default function EditRoleForm({ onToggle, items }) {
-  const [loading, setLoading] = useState(false); // สถานะ Loading
+export default function EditRoleForm({ onToggle, items ,onSave}) {
+  const [loading, setLoading] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
+  } = useForm({ 
     defaultValues: {
-      id: items.id,
-      roleId: items.roleId,
       roleName: items.roleName,
+      isEdit: items.isEdit,
+      isReceive: items.isReceive,
+      isIssue: items.isIssue
     },
   });
-  const mainPage = localStorage.getItem("mainPage");
-  const [submitted, setSubmitted] = useState(false);
-  const [value, setValue] = useState("");
+
   const [isToggled, setIsToggled] = useState(false);
-  const { state } = useLocation(); // รับ props จากหน้าอื่น
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       setLoading(true);
       const response = await httpClient.put(
@@ -45,13 +40,14 @@ export default function EditRoleForm({ onToggle, items }) {
       Swal.fire({
         icon: "success",
         title: "บันทึกสำเร็จ!",
-        text: "ข้อมูลถูกบันทึกเรียบร้อยแล้ว",
+        text: "บันทึกเรียบร้อยแล้ว",
         customClass: { container: "my-sweetalert-container-class" },
       });
 
       const newStatus = false; //ปิด Dialog
       setIsToggled(newStatus);
       onToggle(newStatus);
+      if (onSave) onSave();
 
       reset();
     } catch (error) {
@@ -68,29 +64,141 @@ export default function EditRoleForm({ onToggle, items }) {
     }
   };
 
+  const [selectedRoleItems, setSelectedRoleItems] = useState([]);
+
+  const onRoleChange = (e) => {
+    let _selectedRoleItems = [...selectedRoleItems];
+
+    if (e.checked) _selectedRoleItems.push(e.value);
+    else
+      _selectedRoleItems.splice(
+        _selectedRoleItems.indexOf(e.value),
+        1
+      );
+
+    setSelectedRoleItems(_selectedRoleItems);
+    console.log(selectedRoleItems);
+  };
+
+  useEffect(() => {
+    console.log(items);
+  }, [items]);
+
   return (
     <div className="card flex justify-content-center">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid">
-          {/* หมวดหมู่สินค้า */}
-          {/* <div className="sm:col-12 md:col-12 lg:col-12">
-            <label htmlFor="categoryName">หมวดหมู่สินค้า</label>
+          {/* categoryName */}
+          <div className="sm:col-12 md:col-12 lg:col-12">
+            <label htmlFor="roleName">ชื่อสิทธิ์</label>
           </div>
           <div className="sm:col-12 md:col-12 lg:col-12">
             <Controller
-              name="categoryName"
+              name="roleName"
               control={control}
-              rules={{ required: " กรุณาระบุชื่อหมวดหมู่สินค้า" }}
-              // disabled={true}
-              render={({ field }) => <InputText id="categoryName" {...field} />}
+              rules={{
+                required: " กรุณาระบุ ชื่อสิทธิ์ เช่น Admin, User, etc.",
+              }}
+                disabled={true}
+              render={({ field }) => <InputText id="roleName" {...field} />}
+            />
+            {errors.roleName && (
+              <small className="p-error">{errors.roleName.message}</small>
+            )}
+          </div>
+          <div className="sm:col-12 md:col-12 lg:col-12">
+            <label htmlFor="roleName">สิทธิ์การเข้าถึง</label>
+          </div>
+          <div className="sm:col-12 md:col-12 lg:col-12">
+            <Controller
+              name="isEdit"
+              control={control}
+              render={({ field }) => (
+                <div className="flex flex-column gap-3">
+                  <div className="flex align-items-center">
+                    <Checkbox
+                      inputId="isEdit"
+                      name="isEdit"
+                      value="isEdit"
+                      onChange={(e) => {
+                        field.onChange(e.checked);
+                        onRoleChange(e);
+                      }}
+                      checked={field.value !== undefined ? field.value : items.isEdit}
+                    />
+                    <label htmlFor="isEdit" className="ml-2">
+                      แก้ไขข้อมูล
+                    </label>
+                  </div>
+                </div>
+              )}
             />
             {errors.categoryName && (
-              <small className="p-error">{errors.categoryName.message}</small>
+              <small className="p-error">{errors.roleName.message}</small>
             )}
-          </div> */}
+            <></>
+          </div>
+          <div className="sm:col-12 md:col-12 lg:col-12">
+            <Controller
+              name="isReceive"
+              control={control}
+              render={({ field }) => (
+                <div className="flex flex-column gap-3">
+                  <div className="flex align-items-center">
+                    <Checkbox
+                      inputId="isReceive"
+                      name="isReceive"
+                      value="isReceive"
+                      onChange={(e) => {
+                        field.onChange(e.checked);
+                        onRoleChange(e);
+                      }}
+                      checked={field.value !== undefined ? field.value : items.isReceive}
+                    />
+                    <label htmlFor="isReceive" className="ml-2">
+                      รับเข้าสินค้า
+                    </label>
+                  </div>
+                </div>
+              )}
+            />
+            {errors.categoryName && (
+              <small className="p-error">{errors.roleName.message}</small>
+            )}
+            <></>
+          </div>
+          <div className="sm:col-12 md:col-12 lg:col-12">
+            <Controller
+              name="isIssue"
+              control={control}
+              render={({ field }) => (
+                <div className="flex flex-column gap-3">
+                  <div className="flex align-items-center">
+                    <Checkbox
+                      inputId="isIssue"
+                      name="isIssue"
+                      value="isIssue"
+                      onChange={(e) => {
+                        field.onChange(e.checked);
+                        onRoleChange(e);
+                      }}
+                      checked={field.value !== undefined ? field.value : items.isIssue}
+                    />
+                    <label htmlFor="isIssue" className="ml-2">
+                      เบิกสินค้า
+                    </label>
+                  </div>
+                </div>
+              )}
+            />
+            {errors.categoryName && (
+              <small className="p-error">{errors.roleName.message}</small>
+            )}
+            <></>
+          </div>
         </div>
         {/* ปุ่มบันทึก */}
-        {/* <div className="col-12">
+        <div className="col-12">
           <Button
             type="submit"
             label="บันทึก"
@@ -98,7 +206,7 @@ export default function EditRoleForm({ onToggle, items }) {
             className="mt-2"
             loading={loading}
           />
-        </div> */}
+        </div>
       </form>
     </div>
   );

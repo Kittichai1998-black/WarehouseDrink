@@ -6,6 +6,7 @@ import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 import Users from "../Views/form/settingview/setting-users";
 import Role from "../Views/form/settingview/setting-role";
+import Products from "../Views/form/settingview/setting-products";
 import Warehouse from "../Views/form/settingview/setting-warehouse";
 import Category from "../Views/form/settingview/setting-category";
 
@@ -15,6 +16,7 @@ function Setting2() {
   const nodes = [
     { key: "users", label: "Users", icon: "pi pi-user-edit" },
     { key: "roles", label: "Roles", icon: "pi pi-verified" },
+    { key: "products", label: "Products", icon: "pi pi-shopping-cart" },
     { key: "category", label: "Category", icon: "pi pi-sitemap" },
     { key: "warehouse", label: "Warehouse", icon: "pi pi-home" },
   ];
@@ -29,6 +31,8 @@ function Setting2() {
         return <Users />;
       case "roles":
         return <Role />;
+      case "products":
+        return <Products />;
       case "warehouse":
         return <Warehouse />;
       case "category":

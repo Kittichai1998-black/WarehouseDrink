@@ -18,7 +18,7 @@ const categories = [
   { label: "ท็อปปิ้ง", value: 3 },
 ];
 
-export default function ProductForm({ onToggle , items}) {
+export default function ProductForm({ onToggle , items , onSave}) {
   const [loading, setLoading] = useState(false); // สถานะ Loading
   const {
     control,
@@ -38,7 +38,6 @@ export default function ProductForm({ onToggle , items}) {
         }
     }
   );
-  const mainPage = localStorage.getItem("mainPage");
   const [submitted, setSubmitted] = useState(false);
   const [value, setValue] = useState("");
   const [isToggled, setIsToggled] = useState(false);
@@ -48,7 +47,7 @@ export default function ProductForm({ onToggle , items}) {
     console.log(data);
     try {
       setLoading(true);
-      const response = await httpClient.put("/api/products", data);
+      const response = await httpClient.put("/api/productController/product/:id", data);
       console.log("Response:", response.data);
 
       Swal.fire({
@@ -164,6 +163,7 @@ export default function ProductForm({ onToggle , items}) {
                   onValueChange={(e) => field.onChange(e.value)}
                   mode="decimal"
                   min={0}
+                  max={1000}
                 />
               )}
             />
@@ -216,6 +216,7 @@ export default function ProductForm({ onToggle , items}) {
                   onValueChange={(e) => field.onChange(e.value)}
                   mode="decimal"
                   min={0}
+                  disabled={true}
                 />
               )}
             />

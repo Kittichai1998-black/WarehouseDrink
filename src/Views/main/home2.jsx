@@ -39,18 +39,18 @@ function Home() {
   }
 
   function NevigateToStock() {
-    navigate("/mainstore");
-    localStorage.setItem("mainPage", "stock");
+    navigate("/addstock");
+    // localStorage.setItem("mainPage", "stock");
   }
 
   function NevigateToCheckStock() {
     navigate("/checkstock");
-    localStorage.setItem("mainPage", "stock");
+    // localStorage.setItem("mainPage", "stock");
   }
 
   function NevigateToWarehouse() {
     navigate("/mainwarehouse");
-    localStorage.setItem("mainPage", "warehouse");
+    // localStorage.setItem("mainPage", "warehouse");
   }
 
   function NevigateToSetting() {

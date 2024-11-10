@@ -6,39 +6,35 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import AddRoleForm from "../add-role.jsx";
-import EditRoleForm from "../edit-role.jsx";
-
+import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
+import { httpClient } from "../axios/HttpClient.jsx";
+import ReceiveProductForm from "./form/receive-product.jsx";
+import dayjs from "dayjs";
 import Swal from "sweetalert2";
 
-import { httpClient } from "../../../axios/HttpClient.jsx";
-import dayjs from "dayjs";
+import "../css/table.css";
 
-import "../../../css/table.css";
-
-// import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
-
-export default function SettingRole() {
-  // const navigate = useNavigate();
-  const [role, setRole] = useState([]);
+export default function Receive() {
+  const navigate = useNavigate();
+  // const mainPage = localStorage.getItem("mainPage");
+  const [product, setProduct] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedTopping, setSelectedTopping] = useState(null);
+  const [globalFilterValue, setGlobalFilterValue] = useState("");
+  const [countItem, setCountItem] = useState(0);
   const [Item, setItem] = useState("");
   const [visible, setVisible] = useState(false);
   const [editForm, setEditForm] = useState(false);
-  // const [metaKey, setMetaKey] = useState(true);
+  const [metaKey, setMetaKey] = useState(true);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
-  const getRole = async () => {
-    const response = await httpClient.get("/api/settingController/role");
-    setRole(response.data.result);
-    console.log(response);
-  };
-
-  const refreshData = () => {
-    getRole();
-  };
-  
+  // const rowClass = (data) => {
+  //   return {
+  //     "bg-red-400": data.UnitsInStock < 10,
+  //   };
+  // };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -72,22 +68,22 @@ export default function SettingRole() {
     setItem(data);
   }
 
-  const formatDate = (date) => {
-    return dayjs(date).format("DD-MM-YYYY");
-  };
-  
   function actionAdd() {
     setEditForm(false);
     setVisible(true);
   }
-  
+
+  const formatDate = (date) => {
+    return dayjs(date).format("DD-MM-YYYY");
+  };
+
   const actionEdit = (data) => {
     return (
       <div className="flex gap-2">
         <Button
           icon="pi pi-pencil"
           severity="warning"
-          aria-label="Add"
+          aria-label="Edit"
           size="small"
           onClick={() => labelItemName(data)}
         />
@@ -102,71 +98,83 @@ export default function SettingRole() {
     );
   };
 
-  const confirmDelete = async() => {
+  const confirmDelete = async () => {
     Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes"
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // const deleteProduct = await httpClient.delete(`/api/productController/product/${data.productId}`);
-      Swal.fire({
-        title: "Deleted!",
-        text: "Your file has been deleted.",
-        icon: "success"
-      });
-    }
-  });
-  }
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // const deleteProduct = await httpClient.delete(`/api/productController/product/${data.productId}`);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    });
+  };
 
   const handleToggle = (status) => {
-    setVisible(status);
+    setVisible(status); //ปิด - เปิด dialog
   };
 
   const header = renderHeader();
 
   useEffect(() => {
-    getRole();
+    const getProduct = async () => {
+      try {
+        const response = await httpClient.get("/api/productController/product");
+        const products = response.data.result || response.data;
+        const formattedProduct = products
+        setProduct(formattedProduct);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    getProduct();
   }, []);
 
   return (
     <div className="layout-page">
       <div className="pb-3 flex justify-content-start">
         <Button
-          label="Add"
+          label="รับเข้าสินค้า"
           icon="pi pi-plus"
           severity="info"
           raised
           onClick={actionAdd}
         />
       </div>
+
       <div className="row justify-content-center gap-4">
-        <div className="card col-sm-12">
-          <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
-            Role
-          </p>
+        <div className="col-sm-12">
           <DataTable
             header={header}
             filters={filters}
             onFilter={(e) => setFilters(e.filters)}
-            value={role}
+            value={product}
             showGridlines
             stripedRows
-            sortField="RoleId"
+            // sortField="productId"
             scrollable
             scrollHeight="auto"
             size="small"
+            // rowClassName={rowClass}
+            selection={selectedProduct}
+            onSelectionChange={(e) => setSelectedProduct(e.value)}
             selectionMode="single"
-            dataKey="roleId"
+            // dataKey="ProductID"
             // metaKeySelection={metaKey}
             rowHover
             paginator
             rows={5}
-            // rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10]}
             // tableStyle={{
             //   minWidth: "50rem",
             //   minHeight: 400,
@@ -179,53 +187,61 @@ export default function SettingRole() {
               headerStyle={{ width: "3%" }}
               body={(data, options) => options.rowIndex + 1}
             ></Column>
-            <Column
-              headerStyle={{ width: "4rem" }}
-              body={(data) => actionEdit(data)}
-            ></Column>
             {/* <Column
-              field="roleId"
-              header="RoleID"
+              headerStyle={{ width: "10rem" }}
+              body={(data) => actionEdit(data)}
+            ></Column> */}
+            {/* <Column
+              field="productId"
+              header="ProductID"
               sortable
               style={{ width: "20%" }}
             ></Column> */}
             <Column
-              field="roleName"
-              header="RoleName"
+              field="productName"
+              header="Ingredient"
               sortable
               style={{ width: "30%" }}
             ></Column>
             <Column
-              field="createDate"
-              header="CreateDate"
-              body={(data, options) => formatDate(data.createDate)}
+              field="description"
+              header="Description"
               sortable
               style={{ width: "30%" }}
+            ></Column>
+            <Column
+              field="stockInWarehouse"
+              header="StockInWarehouse"
+              sortable
+              style={{ width: "25%" }}
+            ></Column>
+            <Column
+              field="expirationDate"
+              header="ExpirationDate"
+              sortable
+              body={(data, options) => formatDate(data.expirationDate)}
+              style={{ width: "25%" }}
             ></Column>
             <Column
               field="lastUpdated"
               header="LastUpdate"
-              body={(data, options) => formatDate(data.lastUpdated)}
               sortable
+              body={(data, options) => formatDate(data.lastUpdated)}
               style={{ width: "25%" }}
             ></Column>
           </DataTable>
         </div>
       </div>
       <Dialog
-        header={editForm ? "Edit Role" : "Add Role"}
+        header="รับเข้าสินค้า"
         visible={visible}
         onHide={() => setVisible(false)}
-        style={{ width: "20vw" }}
+        style={{ width: "30vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
         // footer={footerContent}
       >
         <div>
-        {editForm ? (
-            <EditRoleForm onToggle={handleToggle} items={Item} onSave={refreshData}/>
-          ) : (
-            <AddRoleForm onToggle={handleToggle} onSave={refreshData}/>
-          )}
+          <ReceiveProductForm onToggle={handleToggle} products={product}/>
         </div>
       </Dialog>
     </div>

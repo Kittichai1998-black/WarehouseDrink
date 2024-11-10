@@ -22,7 +22,7 @@ export default function EditCategoryForm({ onToggle, items }) {
   } = useForm({
     defaultValues: {
       id: items.id,
-      categoryId: items.categortId,
+      categoryId: items.categoryId,
       categoryName: items.categoryName,
     },
   });

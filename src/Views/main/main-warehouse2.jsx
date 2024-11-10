@@ -5,14 +5,14 @@ import "primereact/resources/themes/saga-blue/theme.css";
 import "primeicons/primeicons.css";
 import "primeflex/primeflex.css";
 import { Card } from "primereact/card";
-import Products from "../addproducts";
+import Receive from "../Receive";
 // import AddProducts from "../addproducts";
 
 function MainWarehouse2() {
   const [activePage, setActivePage] = useState("warehouse");
 
   const nodes = [
-    { key: "products", label: "Products", icon: "pi pi-table" },
+    { key: "receive", label: "Receive", icon: "pi pi-table" },
     // { key: "addproducts", label: "Add Product", icon: "pi pi-file-edit" },
   ];
 
@@ -22,12 +22,12 @@ function MainWarehouse2() {
 
   const renderActivePage = () => {
     switch (activePage) {
-      case "products":
-        return <Products />;
+      case "receive":
+        return <Receive />;
       // case "addproducts":
       //   return <AddProducts />;
       default:
-        return <Products />;
+        return <Receive />;
     }
   };
 
@@ -41,7 +41,9 @@ function MainWarehouse2() {
       <div className="sm:col-12 md:col-10 lg:col-10 xl:col-10">
         <div className="mx-3 mt-3 text-center p-3 border-round-sm bg-white font-bold">
           <div className="flex align-items-center border-bottom-1 surface-border surface-overlay w-full">
-            <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">Products</p>
+            <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
+              Receive
+            </p>
           </div>
           {renderActivePage()}
         </div>
@@ -55,7 +57,7 @@ function SidebarMenu({ nodes, onSelect }) {
     <Tree
       value={nodes}
       selectionMode="single"
-      onSelect={onSelect} // เรียกฟังก์ชันเมื่อมีการเลือกเมนู
+      onSelect={onSelect}
       className="p-m-2"
     />
   );
