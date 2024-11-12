@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
-import { Calendar } from "primereact/calendar";
-import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { useForm, Controller } from "react-hook-form";
@@ -12,7 +10,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
-export default function AddUserForm({ onToggle }) {
+export default function AddUserForm({ onToggle, onSave }) {
   const [loading, setLoading] = useState(false);
   const {
     control,
@@ -21,8 +19,6 @@ export default function AddUserForm({ onToggle }) {
     reset,
   } = useForm();
 
-  const [submitted, setSubmitted] = useState(false);
-  const [value, setValue] = useState("");
   const [isToggled, setIsToggled] = useState(false);
   const [roleItems, setRoleItems] = useState([]);
 
@@ -46,7 +42,7 @@ export default function AddUserForm({ onToggle }) {
       const newStatus = false; //ปิด Dialog
       setIsToggled(newStatus);
       onToggle(newStatus);
-
+      if (onSave) onSave();
       reset();
     } catch (error) {
       console.error("Error:", error);

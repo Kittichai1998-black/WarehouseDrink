@@ -1,11 +1,8 @@
 import React, {useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
-import { Calendar } from "primereact/calendar";
-import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { useForm, Controller } from "react-hook-form";
-import { useLocation } from "react-router-dom";
 import { httpClient } from "../../axios/HttpClient.jsx";
 import { Password } from 'primereact/password';
 
@@ -14,7 +11,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
-export default function UserForm({ onToggle, items }) {
+export default function UserForm({ onToggle, items ,onSave }) {
   const [loading, setLoading] = useState(false); // สถานะ Loading
   const {
     control,
@@ -31,8 +28,6 @@ export default function UserForm({ onToggle, items }) {
     }
 });
 
-  const [submitted, setSubmitted] = useState(false);
-  const [value, setValue] = useState("");
   const [isToggled, setIsToggled] = useState(false);
   const [roleItems, setRoleItems] = useState([]);
 
@@ -57,6 +52,7 @@ export default function UserForm({ onToggle, items }) {
       const newStatus = false; //ปิด Dialog
       setIsToggled(newStatus);
       onToggle(newStatus);
+      if (onSave) onSave();
 
       reset();
     } catch (error) {

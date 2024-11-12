@@ -5,12 +5,12 @@ import Navbar from "../Components/navbar";
 import Login from "../Authen/Authentication";
 import Home1 from "../Views/main/home";
 import Home2 from "../Views/main/home2";
-import MainWarehouse2 from "../Views/main/main-warehouse2";
-import MainStore2 from "../Views/main/main-store2";
+import MainWarehouse from "../Views/main/main-warehouse";
+import MainStore from "../Views/main/main-store";
 import Overview from "../Views/main/overview";
-import AddStock from "../Views/addstock2";
+import AddStock from "../Views/addstock";
 import CheckStock from "../Views/checkstock";
-import Setting from "../Views/setting2";
+import Setting from "../Views/setting";
 import ErrorPage from "../error-page404";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
@@ -62,8 +62,8 @@ function Root() {
         {/* <Route path="/" element={<Home />} /> */}
         <Route path="/" element={isMobile ? <Home2 /> : <Home1 />} />
         {/* <Route path="/mainwarehouse" element={<MainWarehouse/>} /> */}
-        <Route path="/mainwarehouse" element={<MainWarehouse2 />} />
-        <Route path="/mainstore" element={<MainStore2 />} />
+        <Route path="/mainwarehouse" element={<MainWarehouse />} />
+        <Route path="/mainstore" element={<MainStore />} />
         <Route path="/overview" element={<Overview />} />
         <Route path="/addstock" element={<AddStock />} />
         <Route path="/checkstock" element={<CheckStock />} />

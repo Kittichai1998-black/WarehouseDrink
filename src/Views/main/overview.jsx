@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { httpClient } from "../../axios/HttpClient.jsx";
 import StackedbarToDay from "../../Components/stackedbarToday";
-// import StackedbarToMonth from "../../Components/stackedbarToMonth";
 import DataLog from "../../Components/datatable-log";
 
 const Home = () => {

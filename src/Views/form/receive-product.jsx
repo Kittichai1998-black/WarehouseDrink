@@ -6,14 +6,13 @@ import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { AutoComplete } from "primereact/autocomplete";
 import { useForm, Controller } from "react-hook-form";
-import { useLocation } from "react-router-dom";
 import { httpClient } from "../../axios/HttpClient.jsx";
 import Swal from "sweetalert2";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
-export default function ReceiveProductForm({ onToggle, products }) {
+export default function ReceiveProductForm({ onToggle, products, onSave }) {
   const [loading, setLoading] = useState(false);
   const {
     control,
@@ -22,14 +21,13 @@ export default function ReceiveProductForm({ onToggle, products }) {
     reset,
   } = useForm();
 
-  const [submitted, setSubmitted] = useState(false);
   const [warehouse, setWarehouse] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [filteredItems, setFilteredItems] = useState(null);
   const [selectedWarehouse, setSelectedWarehouse] = useState(null);
   const [isToggled, setIsToggled] = useState(false);
-  const { state } = useLocation(); // รับ props จากหน้าอื่น
   const [id, setId] = useState(0);
+
   const product = products
     .filter(
       (product) =>
@@ -51,22 +49,22 @@ export default function ReceiveProductForm({ onToggle, products }) {
         ...data,
         username: username,
       };
-      await httpClient.put(
+      const response = await httpClient.put(
         "/api/productController/receiveProduct/" + id,
         dataWithUsername
       );
-      //   if (response.status === 200) {
+
       Swal.fire({
         icon: "success",
         title: "บันทึกสำเร็จ!",
         text: "ข้อมูลถูกบันทึกเรียบร้อยแล้ว",
         customClass: { container: "my-sweetalert-container-class" },
       });
-      //   }
 
       const newStatus = false; //ปิด Dialog
       setIsToggled(newStatus);
       onToggle(newStatus);
+      if (onSave) onSave();
 
       reset();
     } catch (error) {
@@ -119,6 +117,7 @@ export default function ReceiveProductForm({ onToggle, products }) {
     getWarehouse();
 
     console.log(id);
+    console.log(selectedItem);
   }, []);
 
   return (
@@ -164,7 +163,7 @@ export default function ReceiveProductForm({ onToggle, products }) {
                   disabled={!selectedWarehouse}
                   dropdown
                   onChange={(e) => {
-                    // console.log(e.value.value);
+                    console.log(e.value.value);
                     field.onChange(e.value.value);
                     setId(e.value.id);
                     setSelectedItem(e.value);

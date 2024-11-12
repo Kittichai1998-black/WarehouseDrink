@@ -28,14 +28,18 @@ export default function DataLog({ data }) {
         rowsPerPageOptions={[5, 10]}
         tableStyle={{ minWidth: "50rem" }}
       >
-        {/* <Column field="code" header="วันที่"></Column> */}
-        <Column field="transectionType" header="ประเภทการทำรายการ" body={(data, options) => formatType(data.transectionType)}></Column>
+        <Column
+          field="transectionType"
+          header="ประเภทการทำรายการ"
+          body={(data, options) => formatType(data.transectionType)}
+        ></Column>
         <Column
           field="transactionDateTime"
           header="เวลาทำรายการ"
           body={(data, options) => formatDate(data.transactionDateTime)}
         ></Column>
-        {/* <Column field="warehouse" header="Warehouse"></Column> */}
+        <Column field="warehouseName" header="Warehouse"></Column>
+        <Column field="productName" header="ชื่อสินค้า"></Column>
         <Column field="quantity" header="จำนวนที่ทำรายการ"></Column>
         <Column field="reason" header="เหตุผล"></Column>
         <Column field="remark" header="รายละเอียด"></Column>

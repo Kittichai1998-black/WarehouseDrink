@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
 import { InputText } from "primereact/inputtext";
+import { Dialog } from "primereact/dialog";
 
 import { httpClient } from "../axios/HttpClient.jsx";
-// import FormEditStock from "./form/edit-stock.jsx";
 import dayjs from "dayjs";
+
+import StockDataLog from "../Components/checkstock-datatable-log.jsx";
 
 import "../css/table.css";
 
-// import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
-
 export default function CheckStock() {
   const [product, setProduct] = useState([]);
+  const [visible, setVisible] = useState(false);
+  const [Item, setItem] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [sortOption, setSortOption] = useState("");
   const [filters, setFilters] = useState({
@@ -64,6 +64,11 @@ export default function CheckStock() {
     );
   };
 
+  function labelItemName(data) {
+    setVisible(true);
+    setItem(data);
+  }
+
   const actionEdit = (data) => {
     return (
       <div className="flex gap-1">
@@ -72,7 +77,7 @@ export default function CheckStock() {
           severity="info"
           aria-label="History"
           size="small"
-          // onClick={() => labelItemName(data)}
+          onClick={() => labelItemName(data)}
         />
       </div>
     );
@@ -145,15 +150,6 @@ export default function CheckStock() {
 
   return (
     <div className="layout-page">
-      {/* <div className="align-items-left">
-            <Button
-              label="Back"
-              icon="pi pi-angle-left"
-              severity="info"
-              size="small"
-              onClick={() => navigate("/mainwarehouse")}
-            />
-          </div> */}
       <div className="row justify-content-center gap-4">
         <div className="card col-sm-12">
           <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
@@ -271,6 +267,18 @@ export default function CheckStock() {
             </DataTable>
           </div>
         </div>
+        <Dialog
+        header="Detail Log"
+        visible={visible}
+        onHide={() => setVisible(false)}
+        style={{ width: "50vw" }}
+        breakpoints={{ "960px": "75vw", "641px": "100vw" }}
+        // footer={footerContent}
+      >
+        <div>
+            <StockDataLog  item={Item}/>
+        </div>
+      </Dialog>
       </div>
     </div>
   );

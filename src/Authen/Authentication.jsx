@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/Authen.css";
-import { useSelector, useDispatch } from "react-redux";
 import { httpClient } from "../axios/HttpClient.jsx";
 import Swal from "sweetalert2";
 
 function Authentication() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [profileUser, setProfileUser] = useState();
-  const [hidePass, setHidePass] = useState();
 
   const navigate = useNavigate();
   
@@ -32,6 +29,7 @@ function Authentication() {
         } else {
           localStorage.setItem("token", response.data.result.token);
           localStorage.setItem("userName", response.data.result.fullName);
+          localStorage.setItem("Permission", response.data.result.permission);
           // localStorage.setItem("isLoggedIn", true); // เก็บสถานะการเข้าสู่ระบบ
           navigate("/");
         }

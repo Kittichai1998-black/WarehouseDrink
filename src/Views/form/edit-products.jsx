@@ -18,7 +18,7 @@ const categories = [
   { label: "ท็อปปิ้ง", value: 3 },
 ];
 
-export default function ProductForm({ onToggle , items , onSave}) {
+export default function EditProductForm({ onToggle , items , onSave}) {
   const [loading, setLoading] = useState(false); // สถานะ Loading
   const {
     control,
@@ -38,10 +38,8 @@ export default function ProductForm({ onToggle , items , onSave}) {
         }
     }
   );
-  const [submitted, setSubmitted] = useState(false);
-  const [value, setValue] = useState("");
+
   const [isToggled, setIsToggled] = useState(false);
-  const { state } = useLocation(); // รับ props จากหน้าอื่น
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -60,7 +58,7 @@ export default function ProductForm({ onToggle , items , onSave}) {
       const newStatus = false; //ปิด Dialog
       setIsToggled(newStatus);
       onToggle(newStatus);
-
+      if (onSave) onSave();
       reset();
     } catch (error) {
       console.error("Error:", error);

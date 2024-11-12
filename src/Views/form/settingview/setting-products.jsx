@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
@@ -25,6 +24,25 @@ export default function SettingProducts() {
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
+
+  const permission = localStorage.getItem("Permission");
+
+  const getProduct = async () => {
+    try {
+      const response = await httpClient.get("/api/productController/product");
+      const products = response.data.result || response.data;
+      const formattedProducts = products.filter(
+        (pros) => pros.isActive === "A"
+      );
+      setProduct(formattedProducts);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  const refreshData = () => {
+    getProduct();
+  };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -69,45 +87,52 @@ export default function SettingProducts() {
 
   const actionEdit = (data) => {
     return (
-      <div className="flex gap-2">
-        <Button
-          icon="pi pi-pencil"
-          severity="warning"
-          aria-label="Add"
-          size="small"
-          onClick={() => labelItemName(data)}
-        />
-        <Button
-          icon="pi pi-trash"
-          severity="danger"
-          aria-label="Delete"
-          size="small"
-          onClick={confirmDelete}
-        />
-      </div>
+      <>
+        {!permission.isEdit ? (
+          <div className="flex gap-2">
+            <Button
+              icon="pi pi-pencil"
+              severity="warning"
+              aria-label="Add"
+              size="small"
+              onClick={() => labelItemName(data)}
+            />
+            <Button
+              icon="pi pi-trash"
+              severity="danger"
+              aria-label="Delete"
+              size="small"
+              onClick={() => confirmDelete(data)}
+            />
+          </div>
+        ) : (
+          <></>
+        )}
+      </>
     );
   };
 
-  const confirmDelete = async() => {
+  const confirmDelete = async (data) => {
     Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes"
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // const deleteProduct = await httpClient.delete(`/api/productController/product/${data.productId}`);
-      Swal.fire({
-        title: "Deleted!",
-        text: "Your file has been deleted.",
-        icon: "success"
-      });
-    }
-  });
-  }
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        httpClient.delete("/api/productController/product", data);
+
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    });
+  };
 
   const handleToggle = (status) => {
     setVisible(status);
@@ -116,33 +141,23 @@ export default function SettingProducts() {
   const header = renderHeader();
 
   useEffect(() => {
-    const getProduct = async () => {
-      try {
-        const response = await httpClient.get(
-          "/api/productController/product"
-        );
-        const products = response.data.result || response.data;
-        const formattedProducts = products.filter(
-          (pros) => pros.isActive === "A"
-        );
-        setProduct(formattedProducts);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
     getProduct();
   }, []);
 
   return (
     <div className="layout-page">
       <div className="pb-3 flex justify-content-start">
-        <Button
-          label="Add"
-          icon="pi pi-plus"
-          severity="info"
-          raised
-          onClick={actionAdd}
-        />
+        {!permission.isEdit ? (
+          <Button
+            label="Add"
+            icon="pi pi-plus"
+            severity="info"
+            raised
+            onClick={actionAdd}
+          />
+        ) : (
+          <></>
+        )}
       </div>
       <div className="row justify-content-center gap-4">
         <div className="card col-sm-12">
@@ -237,9 +252,13 @@ export default function SettingProducts() {
       >
         <div>
           {editForm ? (
-            <EditProductForm onToggle={handleToggle} items={Item} />
+            <EditProductForm
+              onToggle={handleToggle}
+              items={Item}
+              onSave={refreshData}
+            />
           ) : (
-            <AddProductForm onToggle={handleToggle} />
+            <AddProductForm onToggle={handleToggle} onSave={refreshData} />
           )}
         </div>
       </Dialog>

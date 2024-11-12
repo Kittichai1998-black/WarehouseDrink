@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { Button } from "primereact/button";
 import { TieredMenu } from "primereact/tieredmenu";
 import { Menubar } from "primereact/menubar";
 import { useNavigate } from "react-router-dom";
@@ -81,30 +80,6 @@ function Navbar() {
     <div>
       <Menubar model={items} start={start} end={end} />
     </div>
-    // <div>
-    //   <nav className="navbar justify-content-between">
-    //     <a className="navbar-logo" href="/">
-    //       {/* <img src="/docs/4.0/assets/brand/bootstrap-solid.svg" width="30" height="30" className="d-inline-block align-top" alt=""> */}
-    //       WareHouseStockDrink
-    //     </a>
-    //     <form className="nav-user">
-    //       <span style={{ paddingRight: "1rem" }}>ผู้ใช้ : {userName}</span>
-    //       <button
-    //         className="btn btn-outline-danger my- my-sm-0"
-    //         style={{ marginRight: "1rem" }}
-    //         onClick={(e) => Logout()}
-    //       >
-    //         logout
-    //       </button>
-    //     </form>
-    //     <div className="flex justify-content-end flex-wrap">
-    //       <div class="flex align-items-center justify-content-center w-4rem h-4rem bg-primary font-bold border-round m-2">
-    //         <TieredMenu model={items} popup ref={menu} breakpoint="767px" />
-    //         <Button label="Show" onClick={(e) => menu.current.toggle(e)} />
-    //       </div>
-    //     </div>
-    //   </nav>
-    // </div>
   );
 }
 

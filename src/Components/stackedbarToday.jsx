@@ -11,23 +11,6 @@ export default function StackedBarToday({data}) {
         const textColor = documentStyle.getPropertyValue('--text-color');
         const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-        // const data = {
-        //     labels: ['วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์', 'วันอาทิตย์'],
-        //     datasets: [
-        //         {
-        //             type: 'bar',
-        //             label: 'รับเข้า',
-        //             backgroundColor: documentStyle.getPropertyValue('--yellow-500'),
-        //             data: [50, 25, 12, 48, 90, 76, 42]
-        //         },
-        //         {
-        //             type: 'bar',
-        //             label: 'เบิกออก',
-        //             backgroundColor: documentStyle.getPropertyValue('--blue-500'),
-        //             data: [21, 84, 24, 75, 37, 65, 34]
-        //         }
-        //     ]
-        // };
         const options = {
             maintainAspectRatio: false,
             aspectRatio: 0.8,

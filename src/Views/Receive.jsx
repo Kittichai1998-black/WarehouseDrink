@@ -6,7 +6,6 @@ import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { httpClient } from "../axios/HttpClient.jsx";
 import ReceiveProductForm from "./form/receive-product.jsx";
 import dayjs from "dayjs";
@@ -16,25 +15,31 @@ import "../css/table.css";
 
 export default function Receive() {
   const navigate = useNavigate();
-  // const mainPage = localStorage.getItem("mainPage");
   const [product, setProduct] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedTopping, setSelectedTopping] = useState(null);
-  const [globalFilterValue, setGlobalFilterValue] = useState("");
-  const [countItem, setCountItem] = useState(0);
   const [Item, setItem] = useState("");
   const [visible, setVisible] = useState(false);
   const [editForm, setEditForm] = useState(false);
-  const [metaKey, setMetaKey] = useState(true);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
-  // const rowClass = (data) => {
-  //   return {
-  //     "bg-red-400": data.UnitsInStock < 10,
-  //   };
-  // };
+  const permission = localStorage.getItem("Permission");
+
+  const getProduct = async () => {
+    try {
+      const response = await httpClient.get("/api/productController/product");
+      const products = response.data.result || response.data;
+      const formattedProduct = products;
+      setProduct(formattedProduct);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  const refreshData = () => {
+    getProduct();
+  };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -62,12 +67,6 @@ export default function Receive() {
     );
   };
 
-  function labelItemName(data) {
-    setVisible(true);
-    setEditForm(true);
-    setItem(data);
-  }
-
   function actionAdd() {
     setEditForm(false);
     setVisible(true);
@@ -77,48 +76,6 @@ export default function Receive() {
     return dayjs(date).format("DD-MM-YYYY");
   };
 
-  const actionEdit = (data) => {
-    return (
-      <div className="flex gap-2">
-        <Button
-          icon="pi pi-pencil"
-          severity="warning"
-          aria-label="Edit"
-          size="small"
-          onClick={() => labelItemName(data)}
-        />
-        <Button
-          icon="pi pi-trash"
-          severity="danger"
-          aria-label="Delete"
-          size="small"
-          onClick={confirmDelete}
-        />
-      </div>
-    );
-  };
-
-  const confirmDelete = async () => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // const deleteProduct = await httpClient.delete(`/api/productController/product/${data.productId}`);
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
-      }
-    });
-  };
-
   const handleToggle = (status) => {
     setVisible(status); //ปิด - เปิด dialog
   };
@@ -126,30 +83,23 @@ export default function Receive() {
   const header = renderHeader();
 
   useEffect(() => {
-    const getProduct = async () => {
-      try {
-        const response = await httpClient.get("/api/productController/product");
-        const products = response.data.result || response.data;
-        const formattedProduct = products
-        setProduct(formattedProduct);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
     getProduct();
   }, []);
 
   return (
     <div className="layout-page">
       <div className="pb-3 flex justify-content-start">
-        <Button
-          label="รับเข้าสินค้า"
-          icon="pi pi-plus"
-          severity="info"
-          raised
-          onClick={actionAdd}
-        />
+        {!permission.isReceive ? (
+          <Button
+            label="รับเข้าสินค้า"
+            icon="pi pi-plus"
+            severity="info"
+            raised
+            onClick={actionAdd}
+          />
+        ) : (
+          <></>
+        )}
       </div>
 
       <div className="row justify-content-center gap-4">
@@ -187,16 +137,6 @@ export default function Receive() {
               headerStyle={{ width: "3%" }}
               body={(data, options) => options.rowIndex + 1}
             ></Column>
-            {/* <Column
-              headerStyle={{ width: "10rem" }}
-              body={(data) => actionEdit(data)}
-            ></Column> */}
-            {/* <Column
-              field="productId"
-              header="ProductID"
-              sortable
-              style={{ width: "20%" }}
-            ></Column> */}
             <Column
               field="productName"
               header="Ingredient"
@@ -241,7 +181,11 @@ export default function Receive() {
         // footer={footerContent}
       >
         <div>
-          <ReceiveProductForm onToggle={handleToggle} products={product}/>
+          <ReceiveProductForm
+            onToggle={handleToggle}
+            products={product}
+            onSave={refreshData}
+          />
         </div>
       </Dialog>
     </div>

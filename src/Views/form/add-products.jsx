@@ -10,9 +10,8 @@ import Swal from "sweetalert2";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
-import { isNullOrUndef } from "chart.js/helpers";
 
-export default function ProductForm({ onToggle }) {
+export default function AddProductForm({ onToggle, onSave }) {
   const [loading, setLoading] = useState(false); 
   const {
     control,
@@ -21,8 +20,6 @@ export default function ProductForm({ onToggle }) {
     reset,
   } = useForm();
 
-  const [submitted, setSubmitted] = useState(false);
-  const [value, setValue] = useState("");
   const [isToggled, setIsToggled] = useState(false);
   const [category, setCategory] = useState([]);
   const [warehouse, setWarehouse] = useState([]);
@@ -47,7 +44,7 @@ export default function ProductForm({ onToggle }) {
       const newStatus = false; //ปิด Dialog
       setIsToggled(newStatus);
       onToggle(newStatus);
-
+      if (onSave) onSave();
       reset();
     } catch (error) {
       // console.error("Error:", error); F
@@ -107,26 +104,6 @@ export default function ProductForm({ onToggle }) {
     <div className="card flex justify-content-center">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid">
-          {/* รหัสสินค้า */}
-          {/* <div className="sm:col-12 md:col-12 lg:col-3">
-            <label htmlFor="productId">รหัสสินค้า</label>
-          </div>
-          <div className="sm:col-12 md:col-12 lg:col-3">
-            <Controller
-              name="productId"
-              control={control}
-              rules={{ required: " กรุณาระบุรหัสสินค้า" }}
-              //   disabled={true}
-              render={({ field }) => (
-                <InputText placeholder="P000..." id="productId" {...field} />
-              )}
-            />
-            {errors.productId && (
-              <small className="p-error">{errors.productId.message}</small>
-            )}
-          </div> */}
-
-          {/* ชื่อสินค้า */}
           <div className="sm:col-12 md:col-12 lg:col-3">
             <label htmlFor="productName">ชื่อสินค้า</label>
           </div>
@@ -226,32 +203,6 @@ export default function ProductForm({ onToggle }) {
               </small>
             )}
           </div>
-
-          {/* สต็อกในร้าน */}
-          {/* <div className="sm:col-12 md:col-12 lg:col-3">
-            <label htmlFor="stockInStore">จำนวนในสต็อกร้าน</label>
-          </div>
-          <div className="sm:col-12 md:col-12 lg:col-3">
-            <Controller
-              name="stockInStock"
-              control={control}
-              defaultValue={0}
-              render={({ field }) => (
-                <InputNumber
-                  id="stockInStock"
-                  value={field.value}
-                  onValueChange={(e) => field.onChange(e.value)}
-                  mode="decimal"
-                  min={0}
-                  disabled={true}
-                />
-              )}
-            />
-            {errors.stockInStore && (
-              <small className="p-error">{errors.stockInStore.message}</small>
-            )}
-          </div> */}
-
           {/* Reorder Point */}
           <div className="sm:col-12 md:col-12 lg:col-3">
             <label htmlFor="reorderPoint">

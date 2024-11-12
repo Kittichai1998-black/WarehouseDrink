@@ -1,37 +1,18 @@
 import { useState, useEffect } from "react";
-import { httpClient } from "../../axios/HttpClient.jsx";
 import { useNavigate } from "react-router-dom";
-import { Button } from "primereact/button";
 import { Carousel } from "primereact/carousel";
-import { Tag } from "primereact/tag";
 import { TabMenu } from "primereact/tabmenu";
 import "../../css/home.css";
-// import '../index.css/'
+
 import WarehouseStock from "../../assets/imgs/Warehouse-1.png";
 import ProductStock from "../../assets/imgs/ProductStock.png";
-// import OverViewIcon from "../../assets/icons/overview-disable-icon.png";
-// import AddStockIcon from "../../assets/icons/addstock-disable-icon.png";
-// import CheckStockIcon from "../../assets/icons/checkstock-disable-icon.png";
-// import SettingIcon from "../../assets/icons/setting-disable-icon.png";
-import OverViewIcon from "../../assets/icons/overview-icon.png";
-import AddStockIcon from "../../assets/icons/addstock-icon.png";
-import CheckStockIcon from "../../assets/icons/checkstock-icon.png";
-import SettingIcon from "../../assets/icons/setting-icon.png";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
 function Home() {
-  const [count, setCount] = useState(0);
-  const [countProduct, setCountProduct] = useState([]);
   const navigate = useNavigate();
-
-  // const getProduct = async () => {
-  //   const response = await httpClient.get("/api/stock");
-  //   const dataArray = Object.values(response.data.result); // แปลงข้อมูลเป็นอาร์เรย์
-  //   setCountProduct(response.data.result);
-  // };
 
   function NevigateToOverview() {
     navigate("/overview");
@@ -94,12 +75,6 @@ function Home() {
               </figure>
             </div>
           </div>
-          {/* <div>
-          <Tag
-            value={product.inventoryStatus}
-            severity={getSeverity(product)}
-          ></Tag>
-        </div> */}
         </div>
       </div>
     );

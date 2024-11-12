@@ -1,18 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { InputText } from "primereact/inputtext";
-import { Calendar } from "primereact/calendar";
-import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 import { useForm, Controller } from "react-hook-form";
 import { httpClient } from "../../axios/HttpClient.jsx";
 import Swal from "sweetalert2";
-import { Password } from "primereact/password";
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 
-export default function AddWarehouseForm({ onToggle }) {
+export default function AddWarehouseForm({ onToggle, onSave }) {
   const [loading, setLoading] = useState(false);
   const {
     control,
@@ -21,10 +17,7 @@ export default function AddWarehouseForm({ onToggle }) {
     reset,
   } = useForm();
 
-  const [submitted, setSubmitted] = useState(false);
-  const [value, setValue] = useState("");
   const [isToggled, setIsToggled] = useState(false);
-  const [categoryItems, setCategoryItems] = useState([]);
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -46,7 +39,7 @@ export default function AddWarehouseForm({ onToggle }) {
       const newStatus = false; //ปิด Dialog
       setIsToggled(newStatus);
       onToggle(newStatus);
-
+      if (onSave) onSave();
       reset();
     } catch (error) {
       console.error("Error:", error);
@@ -61,10 +54,6 @@ export default function AddWarehouseForm({ onToggle }) {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-
-  }, []);
 
   return (
     <div className="card flex justify-content-center">

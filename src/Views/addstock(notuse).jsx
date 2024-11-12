@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { DataTable } from "primereact/datatable";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
+import { InputNumber } from "primereact/inputnumber";
+import { Card } from "primereact/card";
 
 import { httpClient } from "../axios/HttpClient.jsx";
-import IssueProductForm from "./form/issue-product.jsx";
 import dayjs from "dayjs";
 
 import "../css/table.css";
-
-// import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
 
 export default function AddStock() {
   const navigate = useNavigate();
@@ -25,11 +25,72 @@ export default function AddStock() {
   const [countItem, setCountItem] = useState(0);
   const [Item, setItem] = useState("");
   const [visible, setVisible] = useState(false);
-  const [editForm, setEditForm] = useState(false);
   const [metaKey, setMetaKey] = useState(true);
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
+
+  const getProduct = async () => {
+    const response = await httpClient.get("/api/" + products);
+    setProduct(response.data.result);
+    console.log(response);
+  };
+
+  const tableData = Object.keys(product).map((key) => ({
+    ID: key,
+    Branch: product[key].Branch,
+    Day: product[key].Day,
+    LastUpdate: product[key].LastUpdate,
+    MaximumUnits: product[key].MaximumUnits,
+    MinimumUnits: product[key].MinimumUnits,
+    ProductDescription: product[key].ProductDescription,
+    ProductID: product[key].ProductID,
+    ProductName: product[key].ProductName,
+    Type: product[key].Type,
+    UnitsInStock: product[key].UnitsInStock,
+    UnitsOnOrder: product[key].UnitsOnOrder,
+    UnitsPrice: product[key].UnitsPrice,
+    UpdateBy: product[key].UpdateBy,
+  }));
+
+  const updateProduct = async () => {
+    // console.log(Item)
+    Swal.fire({
+      title: "Are you sure?",
+      customClass: { container: "my-sweetalert-container-class" },
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .put("/api/" + mainPage + "/addstock", {
+            ID: Item.ID,
+            UnitsInStock: countItem,
+            UpdateBy: updateBy,
+          })
+          .then((res) => {
+            if (res.data.message !== "success") {
+              Swal.fire(res.data.message, "Error");
+              setVisible(false);
+              getProduct();
+            } else {
+              Swal.fire("Update Success", "success");
+              setVisible(false);
+              getProduct();
+            }
+          });
+      }
+    });
+  };
+
+  const rowClass = (data) => {
+    return {
+      "bg-red-400": data.UnitsInStock < 10,
+    };
+  };
 
   const onGlobalFilterChange = (event) => {
     const value = event.target.value;
@@ -59,24 +120,18 @@ export default function AddStock() {
 
   function labelItemName(data) {
     setVisible(true);
-    setEditForm(true);
     setItem(data);
   }
 
   const formatDate = (date) => {
-    return dayjs(date).format("DD-MM-YYYY");
+    return dayjs(date.LastUpdate).format("DD-MM-YYYY");
   };
 
-  // function actionAdd() {
-  //   setEditForm(false);
-  //   setVisible(true);
-  // }
-
-  const actionEdit = (data) => {
+  const actionAdd = (data) => {
     return (
       <Button
-        icon="pi pi-plus"
-        severity="primary"
+        icon="pi pi-pencil"
+        severity="warning"
         aria-label="Add"
         size="small"
         onClick={() => labelItemName(data)}
@@ -84,61 +139,52 @@ export default function AddStock() {
     );
   };
 
-  const handleToggle = (status) => {
-    setVisible(status); //ปิด - เปิด dialog
-  };
+  // const footerContent = (
+  //   <div>
+  //     <Button
+  //       label="Cancel"
+  //       icon="pi pi-times"
+  //       severity="danger"
+  //       size="small"
+  //       onClick={() => setVisible(false)}
+  //     />
+  //     <Button
+  //       label="Save"
+  //       icon="pi pi-check"
+  //       severity="info"
+  //       size="small"
+  //       onClick={() => updateProduct()}
+  //     />
+  //   </div>
+  // );
 
   const header = renderHeader();
 
   useEffect(() => {
-    const getProduct = async () => {
-      try {
-        const response = await httpClient.get("/api/productController/product");
-        const products = response.data.result || response.data;
-        const formattedProduct = products.filter(
-          (prod) => prod.isActive === "A"
-        );
-        setProduct(formattedProduct);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
-
     getProduct();
   }, []);
 
   return (
     <div className="layout-page">
-      {/* <div className="pb-3 flex justify-content-start">
-        <Button
-          label="Add Stock"
-          icon="pi pi-plus"
-          severity="info"
-          raised
-          onClick={actionAdd}
-        />
-      </div> */}
       <div className="row justify-content-center gap-4">
-        <div className="card col-sm-12">
-          <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">
-            Add Stock
-          </p>
+        <div className="col-sm-12">
           <DataTable
             header={header}
             filters={filters}
             onFilter={(e) => setFilters(e.filters)}
-            value={product}
+            value={tableData}
             showGridlines
             stripedRows
-            sortField="ProductID"
+            sortField="UnitInStock"
             scrollable
             scrollHeight="auto"
             size="small"
+            rowClassName={rowClass}
             selection={selectedProduct}
-            // onSelectionChange={(e) => setSelectedProduct(e.value)}
+            onSelectionChange={(e) => setSelectedProduct(e.value)}
             selectionMode="single"
-            // dataKey="ProductID"
-            // metaKeySelection={metaKey}
+            dataKey="ProductID"
+            metaKeySelection={metaKey}
             rowHover
             paginator
             rows={5}
@@ -156,46 +202,33 @@ export default function AddStock() {
               body={(data, options) => options.rowIndex + 1}
             ></Column>
             <Column
-              headerStyle={{ width: "4rem" }}
-              body={(data) => actionEdit(data)}
-            ></Column>
-            <Column
-              field="productName"
-              header="ProductName"
+              field="ProductID"
+              header="ProductID"
               sortable
               style={{ width: "20%" }}
             ></Column>
             <Column
-              field="productName"
+              field="ProductName"
               header="Ingredient"
               sortable
               style={{ width: "30%" }}
             ></Column>
             <Column
-              field="description"
-              header="Description"
-              sortable
-              style={{ width: "30%" }}
-            ></Column>
-            <Column
-              field="stockInStore"
-              header="StockInStore"
+              field="UnitsInStock"
+              header="Remain"
               sortable
               style={{ width: "25%" }}
             ></Column>
             <Column
-              field="expirationDate"
-              header="ExpirationDate"
-              sortable
-              body={(data, options) => formatDate(data.expirationDate)}
-              style={{ width: "25%" }}
-            ></Column>
-            <Column
-              field="lastUpdated"
+              field="LastUpdate"
               header="LastUpdate"
               sortable
-              body={(data, options) => formatDate(data.lastUpdated)}
+              body={(data, options) => formatDate(data)}
               style={{ width: "25%" }}
+            ></Column>
+            <Column
+              headerStyle={{ width: "4rem" }}
+              body={(data) => actionAdd(data)}
             ></Column>
           </DataTable>
         </div>
@@ -204,12 +237,24 @@ export default function AddStock() {
         header="Add Stock"
         visible={visible}
         onHide={() => setVisible(false)}
-        style={{ width: "25vw" }}
+        style={{ width: "35vw" }}
         breakpoints={{ "960px": "75vw", "641px": "100vw" }}
         // footer={footerContent}
       >
-        <div>
-          <IssueProductForm onToggle={handleToggle} items={Item} />
+        <div className="p-inputgroup">
+          <span className="p-inputgroup-addon" style={{ width: "20rem" }}>
+            Remain
+          </span>
+          {/* <label htmlFor="minmax-buttons" className="font-bold block mb-2">Min-Max Boundaries</label> */}
+          <InputNumber
+            inputId="minmax-buttons"
+            value={countItem}
+            onValueChange={(e) => setCountItem(e.value)}
+            mode="decimal"
+            showButtons
+            min={0}
+            max={100}
+          />
         </div>
       </Dialog>
     </div>

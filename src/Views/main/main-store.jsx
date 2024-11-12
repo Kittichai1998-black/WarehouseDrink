@@ -1,106 +1,63 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import Navbar from "../../Components/navbar";
-import "../../css/home.css";
-// import '../index.css/'
-import WarehouseStock from "../../assets/imgs/Warehouse-1.png";
-import ProductStock from "../../assets/imgs/ProductStock.png";
+import React, { useState } from "react";
+import { Tree } from "primereact/tree";
+import "primereact/resources/primereact.min.css";
+import "primereact/resources/themes/saga-blue/theme.css";
+import "primeicons/primeicons.css";
+import "primeflex/primeflex.css";
+import AddStock from "../addstock";
+import CheckStock from "../checkstock";
 
-import OverViewIcon from "../../assets/icons/overview-icon.png";
-import AddStockIcon from "../../assets/icons/addstock-icon.png";
-import CheckStockIcon from "../../assets/icons/checkstock-icon.png";
-import SettingIcon from "../../assets/icons/setting-icon.png";
+function MainWarehouse2() {
+  const [activePage, setActivePage] = useState("overview");
 
-function MainStore() {
-  const [count, setCount] = useState(0);
+  const nodes = [
+    { key: "AddStock", label: "AddStock", icon: "pi pi-table" },
+    { key: "checkstock", label: "Check Stock", icon: "pi pi-check-square" },
+  ];
+
+  const handleMenuSelect = (event) => {
+    setActivePage(event.node.key); 
+  };
+
+  const renderActivePage = () => {
+    switch (activePage) {
+      case "addStock":
+        return <AddStock />;
+      case "checkstock":
+        return <CheckStock />;
+      default:
+        return <AddStock />;
+    }
+  };
 
   return (
-    <div className="background-main3">
-      <header>
-        <section>
-          <div className="contaier text-center">
-            <div className="row">
-              <div className="col-sm-12">
-                <div className="header-warehouse">
-                <h1 className="card-title" style={{ color: "#FC4F00" }}>
-                        Store Stock
-                    </h1>
-                    <p
-                      style={{
-                        backgroundColor: "#FC4F00",
-                        borderRadius: "24px",
-                        border:"2px solid #fff",
-                        color: "#fff",
-                        fontSize: "30px",
-                      }}
-                    >
-                      Stock Status
-                    </p>
-                    <a href="" style={{ textDecoration: "none" }}>
-                    <div className="hover01">
-                      <figure>
-                        <div>
-                          <img src={ProductStock} className="img-store" />
-                        </div>
-                      </figure>
-                    </div>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </header>
-
-      <footer>
-        <div className="tabmenu-main"> 
-          <div className="row">
-            <div className="col-sm-3 rowbox-items">
-              <div className="border-items">
-                <a
-                  href="/overview"
-                  className="highlight"
-                  style={{ textDecoration: "none" }}
-                >
-                  <img src={OverViewIcon} className="img-menu" />
-                </a>
-              </div>
-              {/* <h4 style={{ color: '#65647C', textDecoration: 'none' }}>Overview</h4> */}
-            </div>
-            <div className="col-sm-3 rowbox-items">
-              <div className="border-items">
-                <a href="/addstock" style={{ textDecoration: "none" }}>
-                  <img src={AddStockIcon} className="img-menu" />
-                  {/* <h4 style={{ color: '#65647C' }}>Add Stock</h4> */}
-                </a>
-              </div>
-            </div>
-            <div className="col-sm-3 rowbox-items">
-              <div className="border-items">
-                <a href="/checkstock" style={{ textDecoration: "none" }}>
-                  <img src={CheckStockIcon} className="img-menu" />
-                  {/* <h4 style={{ color: '#65647C' }}>Check Stock</h4> */}
-                </a>
-              </div>
-            </div>
-            <div className="col-sm-3 rowbox-items">
-              <div className="border-items">
-                <a href="/setting" style={{ textDecoration: "none" }}>
-                  <img src={SettingIcon} className="img-menu" />
-                  {/* <h4 style={{ color: '#65647C' }}>Setting</h4> */}
-                </a>
-              </div>
-            </div>
-          </div>
+    <div className="grid">
+      <div className="sm:col-12 md:col-2 lg:col-2 xl:col-2">
+        <div className="mx-3 mt-3 text-center p-3 border-round-sm bg-white font-bold">
+          <SidebarMenu nodes={nodes} onSelect={handleMenuSelect} />
         </div>
-      </footer>
-      {/* <footer>
-          <h6>
-            &copy; 2023
-          </h6>
-        </footer> */}
+      </div>
+      <div className="sm:col-12 md:col-10 lg:col-10 xl:col-10">
+        <div className="mx-3 mt-3 text-center p-3 border-round-sm bg-white font-bold">
+        <div className="flex align-items-center border-bottom-1 surface-border surface-overlay w-full">
+            <p className="w-2 text-left font-bold text-blue-300 mr-3 text-4xl w-10">Stock</p>
+          </div>
+          {renderActivePage()}
+        </div>
+      </div>
     </div>
   );
 }
 
-export default MainStore;
+function SidebarMenu({ nodes, onSelect }) {
+  return (
+    <Tree
+      value={nodes}
+      selectionMode="single"
+      onSelect={onSelect} 
+      className="p-m-2"
+    />
+  );
+}
+
+export default MainWarehouse2;

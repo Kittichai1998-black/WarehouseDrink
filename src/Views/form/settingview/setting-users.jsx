@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { DataTable } from "primereact/datatable";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Column } from "primereact/column";
@@ -11,15 +10,11 @@ import { httpClient } from "../../../axios/HttpClient.jsx";
 import AddUserForm from "../add-user.jsx";
 import EditUserForm from "../edit-user.jsx";
 import dayjs from "dayjs";
-import Swal from "sweetalert2"; 
+import Swal from "sweetalert2";
 
 import "../../../css/table.css";
 
-// import TopBarOverview from "../assets/imgs/topbar/topbar-overview.png";
-
 export default function SettingUsers() {
-  // const navigate = useNavigate();
-  // const mainPage = localStorage.getItem("mainPage");
   const [settingUsers, setSettingUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [Item, setItem] = useState("");
@@ -30,10 +25,16 @@ export default function SettingUsers() {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
   });
 
-  const rowClass = (data) => {
-    return {
-      "bg-red-400": data.UnitsInStock < 10,
-    };
+  const permission = localStorage.getItem("Permission");
+
+  const getUsers = async () => {
+    const response = await httpClient.get("/api/loginController/users");
+    setSettingUsers(response.data.result);
+    console.log(response);
+  };
+
+  const refreshData = () => {
+    getUsers();
   };
 
   const onGlobalFilterChange = (event) => {
@@ -79,26 +80,32 @@ export default function SettingUsers() {
 
   const actionEdit = (data) => {
     return (
-      <div className="flex gap-2">
-        <Button
-          icon="pi pi-pencil"
-          severity="warning"
-          aria-label="Add"
-          size="small"
-          onClick={() => labelItemName(data)}
-        />
-        <Button
-          icon="pi pi-trash"
-          severity="danger"
-          aria-label="Delete"
-          size="small"
-          onClick={confirmDelete}
-        />
-      </div>
+      <>
+        {!permission.isEdit ? (
+          <div className="flex gap-2">
+            <Button
+              icon="pi pi-pencil"
+              severity="warning"
+              aria-label="Add"
+              size="small"
+              onClick={() => labelItemName(data)}
+            />
+            <Button
+              icon="pi pi-trash"
+              severity="danger"
+              aria-label="Delete"
+              size="small"
+              onClick={() => confirmDelete(data)}
+            />
+          </div>
+        ) : (
+          <></>
+        )}
+      </>
     );
   };
 
-  const confirmDelete = async () => {
+  const confirmDelete = async (data) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -109,7 +116,8 @@ export default function SettingUsers() {
       confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
-        // const deleteProduct = await httpClient.delete(`/api/productController/product/${data.productId}`);
+        httpClient.delete("/api/loginController/user", data);
+
         Swal.fire({
           title: "Deleted!",
           text: "Your file has been deleted.",
@@ -126,24 +134,23 @@ export default function SettingUsers() {
   const header = renderHeader();
 
   useEffect(() => {
-    const getUsers = async () => {
-      const response = await httpClient.get("/api/loginController/users");
-      setSettingUsers(response.data.result);
-      console.log(response);
-    };
     getUsers();
   }, []);
 
   return (
     <div className="layout-page">
       <div className="pb-3 flex justify-content-start">
-        <Button
-          label="Add"
-          icon="pi pi-plus"
-          severity="info"
-          raised
-          onClick={actionAdd}
-        />
+        {!permission.isEdit ? (
+          <Button
+            label="Add"
+            icon="pi pi-plus"
+            severity="info"
+            raised
+            onClick={actionAdd}
+          />
+        ) : (
+          <></>
+        )}
       </div>
       <div className="row justify-content-center gap-4">
         <div className="card col-sm-12">
@@ -161,7 +168,7 @@ export default function SettingUsers() {
             scrollable
             scrollHeight="auto"
             size="small"
-            rowClassName={rowClass}
+            // rowClassName={rowClass}
             selection={selectedUser}
             onSelectionChange={(e) => setSelectedUser(e.value)}
             selectionMode="single"
@@ -226,9 +233,13 @@ export default function SettingUsers() {
       >
         <div>
           {editForm ? (
-            <EditUserForm onToggle={handleToggle} items={Item} />
+            <EditUserForm
+              onToggle={handleToggle}
+              items={Item}
+              onSave={refreshData}
+            />
           ) : (
-            <AddUserForm onToggle={handleToggle} />
+            <AddUserForm onToggle={handleToggle} onSave={refreshData} />
           )}
         </div>
       </Dialog>
